@@ -1,79 +1,37 @@
-# Criterios de aceite e plano de execucao
+# Sprint 02 — entendimento e plano
 
-## Entendimento dos criterios de aceite
+Fonte: atividade FIAP ON 662437, lida em 27/09/2026. Prazo: **13/10/2026 às 23h59**. Equipe exibida: **Grupo 22**, Henrique Pires Espindola, RM 568600. A Sprint 01 usava o nome Grupo 5; preservamos esse documento em `docs/sprint-01/`.
 
-O entregavel formal da Sprint 01 e um arquivo `.txt` contendo o link do repositorio do grupo. Esse repositorio deve conter um `README.md` bem elaborado, em portugues claro, com o documento central de pesquisa e proposta da equipe.
+## Demanda e rubrica
 
-Para cumprir o enunciado e maximizar a rubrica, o repositorio deve conter:
+O entregável é um TXT com o link do repositório contendo um protótipo funcional, README em português e evidências. A instituição exige compreensão do código e pitch individual de três minutos na etapa presencial para validar as notas. Apoio de IA ao desenvolvimento é permitido. Não basta um documento ou telas estáticas.
 
-- Nome da equipe e RMs dos integrantes.
-- Descricao clara do problema e do contexto GoodWe/FIAP.
-- Resultado das tres frentes de pesquisa.
-- Ao menos uma opcao de aprofundamento por frente.
-- Diagrama de arquitetura como imagem referenciada no README.
-- Modelo de rateio com variaveis, criterios e excecoes.
-- Papel da IA como parte estrutural da solucao.
-- Plano da Sprint 02 com ordem de desenvolvimento e tecnologias.
-- Fontes consultadas ao final.
+| Critério | Peso | Critério de aceite técnico |
+|---|---:|---|
+| Lógica central alinhada à Sprint 01 | 3 | Registrar sessões, validar medidores, associar morador/unidade e calcular rateio decimal auditável; tratar interrupção, ociosidade, perdas, gratuidade, crédito e ausência de consumo |
+| IA estrutural integrada | 3 | Modelo treinado no histórico; sessões atípicas retidas antes da cobrança; revisão humana registrada; previsão mensal com avaliação temporal e comparação com baseline |
+| Evidências de funcionamento | 2 | API exercitada, testes reproduzíveis, capturas reais do dashboard e do fluxo de fatura |
+| Autoria e compreensão | 1 | Decisões explicadas, guia de código e roteiro de pitch; limites e dados sintéticos identificados |
+| README e organização | 1 | Execução reproduzível, arquitetura, comandos, desvios, evidências e histórico de commits descritivos |
 
-## Rubrica traduzida em checklist pratico
+## Plano de execução
 
-| Rubrica | Para atender bem | Evidencia criada |
-| --- | --- | --- |
-| Problema claro e embasado | Explicar dor de condominios/campus: identificacao, medicao, rateio, transparencia e auditoria | `README.md`, secoes "Resumo" e "Frente 1" |
-| Tres frentes documentadas | Cobrir contexto, regulacao/tecnica e arquitetura/IA com analise propria | `README.md`, secoes "Frente 1", "Frente 2" e "Frente 3" |
-| Arquitetura e rateio definidos | Mostrar camadas, fluxo de dados, formula de cobranca e excecoes | `docs/arquitetura-ev-chargeops.svg` e secao "Modelo de rateio" |
-| IA estrutural | Definir uso real de IA em previsao, anomalia e perfis | Secao "Papel da IA" |
-| README organizado e autoral | Texto direto, fontes consultadas, decisoes justificadas | `README.md` completo |
+1. **Domínio e persistência:** FastAPI, SQLAlchemy/Alembic, PostgreSQL no Compose e SQLite para execução rápida. Contrato normalizado independente da GoodWe. Login de gestor/morador, isolamento por unidade, ingestão idempotente, auditoria e rateio com Decimal. Validar cálculos e exceções por testes de integração.
+2. **Inteligência aplicada:** detector estatístico robusto treinado em sessões históricas (mediana e MAD), regressão de consumo diário, holdout temporal, baseline semanal e previsão mensal. O detector altera a elegibilidade da cobrança. Validar anomalia, insuficiência de dados e ausência de dados futuros.
+3. **Experiência funcional:** React/Vite, dashboard, filtros, simulador de cenários, revisão, demonstrativo, fechamento mensal e CSV; portal do morador protegido pela API. Testar o fluxo com servidor e navegador reais.
+4. **Entrega e explicação:** instruções, justificativas de desvios, modelo de dados, evidências, checklist da rubrica, guia de estudo e pitch de três minutos. Conferir clone/instalação, build e testes.
 
-## Plano de execucao da Sprint 01
+## Decisões de escopo
 
-1. Completar dados da equipe
-   - Preencher nome da equipe e RMs no `README.md`.
-   - Confirmar se o repositorio sera publico ou privado com acesso ao professor.
+- A fonte de dados será sintética e explicitamente identificada. Nenhuma credencial SEMS ou amostra real foi fornecida. Não inventar endpoints, leitura Modbus ou homologação GoodWe.
+- Tarifas e taxas são hipóteses didáticas configuradas por mês, não preços reais da distribuidora. Nenhuma cobrança financeira é executada.
+- A sessão pertence ao mês do início em America/Sao_Paulo, inclusive se terminar no mês seguinte. Essa simplificação será explicada no demonstrativo.
+- O fechamento é persistido e imutável. Sessões retidas devem ser revisadas antes dele; tentativas de importar dados para um mês fechado são rejeitadas.
+- Sessões sem identificação ou medição inconsistente não podem ser liberadas; são excluídas com justificativa. Dados corrigidos entram com novo identificador, preservando o original.
+- Créditos são lançados antes do fechamento, com motivo e chave idempotente. Não há edição de uma fatura já fechada no MVP.
+- Sem chatbot, clustering, gateways de pagamento ou controle elétrico físico nesta sprint. Foram opções futuras, não prioridades da Sprint 01.
+- Dados pessoais das contas de demonstração são fictícios.
 
-2. Revisar fontes
-   - Conferir links citados no README.
-   - Adicionar qualquer fonte consultada diretamente pela equipe.
-   - Evitar fonte nao verificada ou gerada apenas por IA.
+## Estado
 
-3. Validar escolhas tecnicas
-   - Confirmar se o MVP usara FastAPI/PostgreSQL/React.
-   - Confirmar se havera acesso real ao SEMS+ na Sprint 02.
-   - Caso nao haja acesso, manter simulador como fonte primaria do prototipo.
-
-4. Ajustar diagrama
-   - Se a equipe preferir, converter o SVG para PNG.
-   - Manter a imagem em `docs/` e a referencia no README.
-
-5. Subir repositorio
-   - Criar repo `ev-chargeops-sprint-01`.
-   - Subir `README.md`, `docs/arquitetura-ev-chargeops.svg`, `docs/arquitetura-ev-chargeops.mmd` e este plano.
-   - Atualizar `entrega.txt` com o link real do repo.
-
-6. Revisao final
-   - Conferir se todos os itens do checklist aparecem no README.
-   - Ler o README como avaliador: problema, pesquisa, decisao e plano precisam estar claros sem depender de explicacao oral.
-
-## Backlog sugerido para Sprint 02
-
-| Ordem | Entrega | Resultado esperado |
-| --- | --- | --- |
-| 1 | Setup tecnico | Repositorio com backend, frontend, banco e Docker |
-| 2 | Schema e migracoes | Tabelas de usuarios, unidades, carregadores, sessoes e faturas |
-| 3 | Simulador de sessoes | Dados realistas para demonstrar o fluxo completo |
-| 4 | API de sessoes | Criar, listar, validar e auditar sessoes |
-| 5 | Motor de rateio | Calculo mensal por usuario/unidade |
-| 6 | Dashboard gestor | Visao de consumo, usuarios, faturas e anomalias |
-| 7 | Portal usuario | Historico e demonstrativo individual |
-| 8 | IA inicial | Previsao de consumo e deteccao de anomalias |
-| 9 | Adapter GoodWe | Integracao com SEMS/API se acesso estiver disponivel |
-| 10 | Pitch tecnico | Roteiro e demo de 3 minutos |
-
-## Pontos que ainda dependem da equipe
-
-- Nome da equipe e RMs.
-- Link real do repositorio.
-- Acesso real a uma conta GoodWe/SEMS+.
-- Regras finais de taxa operacional e ociosidade, que devem ser validadas conforme contexto escolhido: condominio, predio corporativo ou campus.
-
+Entendimento concluído; implementação e validação em andamento. Consulte `docs/evidencias/VALIDACAO.md` para o resultado efetivamente obtido.
