@@ -112,8 +112,9 @@ def seed(db):
                 idle_grace_minutes=15,
             )
         )
-    db.commit()
+    db.flush()
     counter = 0
+    meter = Decimal("1000")
     for offset in range((DEMO_AS_OF - date(2026, 7, 1)).days):
         day = date(2026, 7, 1) + timedelta(days=offset)
         if day == date(2026, 9, 1):
@@ -146,8 +147,8 @@ def seed(db):
                 else f"veh-{label}",
                 started_at=start,
                 ended_at=start + timedelta(minutes=active + idle),
-                start_meter_kwh=Decimal(counter * 100),
-                end_meter_kwh=Decimal(counter * 100) + energy,
+                start_meter_kwh=meter,
+                end_meter_kwh=meter + energy,
                 energy_kwh=energy,
                 idle_minutes=idle,
                 source="simulator",
@@ -155,7 +156,7 @@ def seed(db):
                 stop_reason="power_interruption" if offset % 17 == 0 else "vehicle_disconnected",
             )
             ingest(db, p, "seed", warmup=day < date(2026, 9, 1))
-        db.commit()
+            meter += energy
     for scenario in ("anomaly", "unidentified", "meter_error", "promotion"):
         ingest(db, scenario_payload(scenario, sid=f"demo-{scenario}"), "seed")
     db.add(

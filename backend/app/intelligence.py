@@ -80,6 +80,10 @@ def score_session(s, path=MODEL_PATH):
         )
     x = np.array(features(s))
     z = np.abs(x - model["median"]) / model["scale"]
+    # Uma interrupção encurta a sessão; baixo consumo/duração é esperado nesse caso.
+    # Excessos e potência/ociosidade atípicas continuam sujeitos à revisão.
+    if s.status == "interrupted":
+        z[:2] = np.where(x[:2] < model["median"][:2], 0, z[:2])
     reasons = [
         f"{name}: {value:.2f}; referência histórica {center:.2f}; desvio robusto {value_z:.1f}"
         for name, value, center, value_z in zip(FEATURES, x, model["median"], z, strict=True)

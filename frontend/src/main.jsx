@@ -1,83 +1,1656 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {createRoot} from 'react-dom/client';
-import {Area, Bar, BarChart, CartesianGrid, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts';
-import {Activity, ArrowDownToLine, ArrowRight, ArrowUpRight, BrainCircuit, Check, CheckCheck, ChevronRight, CircleAlert, ClipboardList, CreditCard, FileCheck2, Gauge, LayoutDashboard, LogOut, Play, Plus, Settings2, ShieldCheck, Sparkles, Users, X, Zap} from 'lucide-react';
-import {request, money, number, dateTime, monthName} from './api';
-import './style.css';
+import React, { useEffect, useRef, useState } from "react";
+import { createRoot } from "react-dom/client";
+import {
+  Area,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ComposedChart,
+  Line,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
+import {
+  Activity,
+  ArrowDownToLine,
+  ArrowRight,
+  ArrowUpRight,
+  BrainCircuit,
+  Check,
+  CheckCheck,
+  ChevronRight,
+  CircleAlert,
+  ClipboardList,
+  CreditCard,
+  FileCheck2,
+  Gauge,
+  LayoutDashboard,
+  LogOut,
+  Play,
+  Plus,
+  Settings2,
+  ShieldCheck,
+  Sparkles,
+  Users,
+  X,
+  Zap,
+} from "lucide-react";
+import { request, money, number, dateTime, monthName } from "./api";
+import "@fontsource/manrope/latin-400.css";
+import "@fontsource/manrope/latin-600.css";
+import "@fontsource/manrope/latin-700.css";
+import "@fontsource/dm-sans/latin-400.css";
+import "@fontsource/dm-sans/latin-500.css";
+import "@fontsource/dm-sans/latin-600.css";
+import "./style.css";
 
-const NAV = [['overview', 'Visão geral', LayoutDashboard], ['sessions', 'Sessões de recarga', Activity], ['billing', 'Rateio e faturas', CreditCard], ['intelligence', 'Inteligência', BrainCircuit], ['audit', 'Auditoria', ClipboardList]];
-const titles = {overview:'Sua operação, em perspectiva.', sessions:'Cada recarga tem uma história.', billing:'Consumo medido. Rateio transparente.', intelligence:'Dados que orientam decisões.', audit:'Um histórico para confiar.'};
-const statuses = {eligible:'Validada', pending:'Em revisão', excluded:'Excluída'};
-export function Badge({status}) {return <span className={`badge ${status}`}>{status === 'eligible' ? <Check size={12}/> : status === 'pending' ? <CircleAlert size={12}/> : null}{statuses[status] || status}</span>;}
-function Logo() {return <div className="logo"><div className="logo-icon"><Zap size={22} fill="currentColor"/></div><span>charge<span className="logo-light">ops</span><small>EV ENERGY MANAGEMENT</small></span></div>;}
-function Empty({children}) {return <div className="empty"><FileCheck2 size={30}/><p>{children}</p></div>;}
-export function Modal({title, subtitle, children, onClose, wide=false}) {
+const NAV = [
+  ["overview", "Visão geral", LayoutDashboard],
+  ["sessions", "Sessões de recarga", Activity],
+  ["billing", "Rateio e faturas", CreditCard],
+  ["intelligence", "Inteligência", BrainCircuit],
+  ["audit", "Auditoria", ClipboardList],
+];
+const titles = {
+  overview: "Sua operação, em perspectiva.",
+  sessions: "Cada recarga tem uma história.",
+  billing: "Consumo medido. Rateio transparente.",
+  intelligence: "Dados que orientam decisões.",
+  audit: "Um histórico para confiar.",
+};
+const statuses = {
+  eligible: "Validada",
+  pending: "Em revisão",
+  excluded: "Excluída",
+};
+export function Badge({ status }) {
+  return (
+    <span className={`badge ${status}`}>
+      {status === "eligible" ? (
+        <Check size={12} />
+      ) : status === "pending" ? (
+        <CircleAlert size={12} />
+      ) : null}
+      {statuses[status] || status}
+    </span>
+  );
+}
+function Logo() {
+  return (
+    <div className="logo">
+      <div className="logo-icon">
+        <Zap size={22} fill="currentColor" />
+      </div>
+      <span>
+        charge<span className="logo-light">ops</span>
+        <small>EV ENERGY MANAGEMENT</small>
+      </span>
+    </div>
+  );
+}
+function Empty({ children }) {
+  return (
+    <div className="empty">
+      <FileCheck2 size={30} />
+      <p>{children}</p>
+    </div>
+  );
+}
+export function Modal({ title, subtitle, children, onClose, wide = false }) {
   const ref = useRef(null);
-  useEffect(() => {const node = ref.current; node.showModal(); return () => node.close();}, []);
-  return <dialog ref={ref} className={wide ? 'modal wide' : 'modal'} onCancel={onClose}><header><div><h2>{title}</h2>{subtitle && <p>{subtitle}</p>}</div><button className="icon-button" aria-label="Fechar janela" onClick={onClose}><X/></button></header>{children}</dialog>;
+  useEffect(() => {
+    const node = ref.current;
+    node.showModal();
+    return () => node.close();
+  }, []);
+  return (
+    <dialog
+      ref={ref}
+      className={wide ? "modal wide" : "modal"}
+      onCancel={onClose}
+    >
+      <header>
+        <div>
+          <h2>{title}</h2>
+          {subtitle && <p>{subtitle}</p>}
+        </div>
+        <button
+          className="icon-button"
+          aria-label="Fechar janela"
+          onClick={onClose}
+        >
+          <X />
+        </button>
+      </header>
+      {children}
+    </dialog>
+  );
 }
-function Login({onLogin}) {
-  const [email,setEmail] = useState('gestor@demo.local'); const [password,setPassword] = useState('Demo2026!');
-  const [error,setError] = useState(''); const [busy,setBusy] = useState(false);
-  async function submit(e) {e.preventDefault();setBusy(true);setError('');try {onLogin(await request('/auth/login', null, {method:'POST',body:JSON.stringify({email,password})}));} catch(e){setError(e.message);} finally{setBusy(false);}}
-  return <div className="login"><section className="login-story"><Logo/><div className="login-copy"><span className="eyebrow">ENERGIA COMPARTILHADA. GESTÃO INTELIGENTE.</span><h1>A recarga é coletiva.<br/><em>A conta é individual.</em></h1><p>Transforme sessões de recarga em consumo rastreável, rateio justo e decisões com dados.</p><div className="flow"><span><Zap/>Sessão</span><ChevronRight/><span><BrainCircuit/>Análise</span><ChevronRight/><span><FileCheck2/>Rateio</span></div></div><footer>Enterprise Challenge 2026 <span>GoodWe + FIAP</span></footer></section><section className="login-panel"><div className="login-form"><span className="pill"><span/>PROTÓTIPO FUNCIONAL · SPRINT 02</span><h2>Bem-vindo ao ChargeOps</h2><p>Explore a operação do condomínio demonstrativo.</p><div className="role-switch"><button className={email.startsWith('gestor')?'selected':''} onClick={()=>setEmail('gestor@demo.local')}>Gestor</button><button className={email.startsWith('morador')?'selected':''} onClick={()=>setEmail('morador101@demo.local')}>Morador · ap. 101</button></div><form onSubmit={submit}><label>E-mail<input type="email" value={email} onChange={e=>setEmail(e.target.value)} required/></label><label>Senha<input type="password" value={password} onChange={e=>setPassword(e.target.value)} required/></label>{error && <p className="error" role="alert">{error}</p>}<button className="primary full" disabled={busy}>{busy?'Entrando…':'Acessar plataforma'}<ArrowRight size={18}/></button></form><div className="demo-note"><ShieldCheck size={20}/><p><strong>Ambiente de demonstração</strong>Dados sintéticos de julho a setembro de 2026. Senha das contas de exemplo: <code>Demo2026!</code>. Nenhuma cobrança real é realizada.</p></div></div></section></div>;
+function Login({ onLogin }) {
+  const [email, setEmail] = useState("gestor@demo.local");
+  const [password, setPassword] = useState("Demo2026!");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  async function submit(e) {
+    e.preventDefault();
+    setBusy(true);
+    setError("");
+    try {
+      onLogin(
+        await request("/auth/login", null, {
+          method: "POST",
+          body: JSON.stringify({ email, password }),
+        }),
+      );
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <div className="login">
+      <section className="login-story">
+        <Logo />
+        <div className="login-copy">
+          <span className="eyebrow">
+            ENERGIA COMPARTILHADA. GESTÃO INTELIGENTE.
+          </span>
+          <h1>
+            A recarga é coletiva.
+            <br />
+            <em>A conta é individual.</em>
+          </h1>
+          <p>
+            Transforme sessões de recarga em consumo rastreável, rateio justo e
+            decisões com dados.
+          </p>
+          <div className="flow">
+            <span>
+              <Zap />
+              Sessão
+            </span>
+            <ChevronRight />
+            <span>
+              <BrainCircuit />
+              Análise
+            </span>
+            <ChevronRight />
+            <span>
+              <FileCheck2 />
+              Rateio
+            </span>
+          </div>
+        </div>
+        <footer>
+          Enterprise Challenge 2026 <span>GoodWe + FIAP</span>
+        </footer>
+      </section>
+      <section className="login-panel">
+        <div className="login-form">
+          <span className="pill">
+            <span />
+            PROTÓTIPO FUNCIONAL · SPRINT 02
+          </span>
+          <h2>Bem-vindo ao ChargeOps</h2>
+          <p>Explore a operação do condomínio demonstrativo.</p>
+          <div className="role-switch">
+            <button
+              className={email.startsWith("gestor") ? "selected" : ""}
+              onClick={() => setEmail("gestor@demo.local")}
+            >
+              Gestor
+            </button>
+            <button
+              className={email.startsWith("morador") ? "selected" : ""}
+              onClick={() => setEmail("morador101@demo.local")}
+            >
+              Morador · ap. 101
+            </button>
+          </div>
+          <form onSubmit={submit}>
+            <label>
+              E-mail
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </label>
+            <label>
+              Senha
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </label>
+            {error && (
+              <p className="error" role="alert">
+                {error}
+              </p>
+            )}
+            <button className="primary full" disabled={busy}>
+              {busy ? "Entrando…" : "Acessar plataforma"}
+              <ArrowRight size={18} />
+            </button>
+          </form>
+          <div className="demo-note">
+            <ShieldCheck size={20} />
+            <p>
+              <strong>Ambiente de demonstração</strong>Dados sintéticos de julho
+              a setembro de 2026. Senha das contas de exemplo:{" "}
+              <code>Demo2026!</code>. Nenhuma cobrança real é realizada.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
 }
-function Stat({label, value, unit, foot, icon:Icon, accent}) {return <article className={`stat ${accent||''}`}><div className="stat-label">{label}<Icon size={19}/></div><div className="stat-value">{value}<small>{unit}</small></div><p>{foot}</p></article>;}
-function ConsumptionChart({prediction, daily=[]}) {
-  const history = prediction?.status==='ready' ? prediction.history : daily;
-  const data = history.map(d=>({day:d.date.slice(8),real:d.kwh}));
-  if (prediction?.future?.length) {if(data.length)data[data.length-1].prev=data.at(-1).real;data.push(...prediction.future.map(d=>({day:d.date.slice(8),prev:d.kwh})));}
-  return <div className="chart" role="img" aria-label="Gráfico de consumo diário validado e previsão para o restante do mês"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={data} margin={{top:12,right:12,left:-20,bottom:0}}><defs><linearGradient id="fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#17a687" stopOpacity={.22}/><stop offset="100%" stopColor="#17a687" stopOpacity={.01}/></linearGradient></defs><CartesianGrid vertical={false} stroke="#e9eeeb"/><XAxis dataKey="day" axisLine={false} tickLine={false} tick={{fontSize:11,fill:'#7b8887'}} minTickGap={15}/><YAxis axisLine={false} tickLine={false} tick={{fontSize:11,fill:'#7b8887'}}/><Tooltip formatter={v=>`${number(v)} kWh`} labelFormatter={v=>`Dia ${v}`} contentStyle={{border:'1px solid #dfe7e2',borderRadius:10}}/><Area type="monotone" dataKey="real" name="Realizado" stroke="#12846e" fill="url(#fill)" strokeWidth={2.5}/><Line type="monotone" dataKey="prev" name="Previsão" stroke="#8192ba" strokeDasharray="5 5" strokeWidth={2} dot={false}/></ComposedChart></ResponsiveContainer></div>;
+function Stat({ label, value, unit, foot, icon: Icon, accent }) {
+  return (
+    <article className={`stat ${accent || ""}`}>
+      <div className="stat-label">
+        {label}
+        <Icon size={19} />
+      </div>
+      <div className="stat-value">
+        {value}
+        <small>{unit}</small>
+      </div>
+      <p>{foot}</p>
+    </article>
+  );
 }
-function Overview({data, onNav, onDetail}) {
-  const {analytics:a, forecast:f, sessions, catalog} = data;
-  return <><div className="stats"><Stat label="Energia validada" value={number(a.energy_kwh)} unit="kWh" foot={`${a.sessions} sessões registradas no mês`} icon={Zap}/><Stat label="Rateio do período" value={money(a.total_cents)} foot="Consumo + taxas − créditos" icon={CreditCard}/><Stat label="Unidades ativas" value={a.active_units} unit={`/ ${catalog.units.length}`} foot="Somente quem usa paga o consumo" icon={Users}/><Stat label="Sessões em revisão" value={a.pending} foot="Retidas antes da cobrança" icon={ShieldCheck} accent={a.pending?'amber':''}/></div><div className="dashboard-grid"><section className="panel consumption"><div className="panel-head"><div><h2>O ritmo da sua energia</h2><p>Consumo diário validado · kWh</p></div><div className="legend"><span>Realizado</span><span>Previsto</span></div></div><ConsumptionChart prediction={f} daily={a.daily}/><div className="chart-footer"><span><span className="dot green"/>Energia registrada por sessão</span><span>Corte da demonstração: 27 set. 2026</span></div></section><section className="insight"><span className="eyebrow"><Sparkles size={15}/> INTELIGÊNCIA EM AÇÃO</span><h2>Antecipe o fim<br/>do mês.</h2>{f.status==='ready'?<><div className="forecast-number">{number(f.projected_kwh)} <small>kWh</small></div><p>projetados para o período, com base no histórico validado.</p><div className="insight-separator"/><div className="insight-row"><span>Ainda previstos</span><strong>{number(f.remaining_kwh)} kWh</strong></div><div className="insight-row"><span>Erro médio da regressão</span><strong>{number(f.ridge_mae_kwh)} kWh/dia</strong></div></>:<p>{f.explanation}</p>}<button onClick={()=>onNav('intelligence')}>Entender a previsão<ArrowUpRight size={17}/></button></section><section className="panel"><div className="panel-head"><div><h2>Recargas recentes</h2><p>Rastreabilidade do início ao rateio</p></div><button className="text-button" onClick={()=>onNav('sessions')}>Ver todas<ArrowRight size={15}/></button></div><SessionTable rows={sessions.slice(0,5)} onDetail={onDetail} compact/></section><section className="panel station-panel"><div className="panel-head"><div><h2>Pontos de recarga</h2><p>Infraestrutura demonstrativa</p></div><Gauge size={20}/></div>{catalog.chargers.map(c=><div className="station" key={c.id}><div className="station-icon"><Zap size={20}/></div><div><strong>{c.name}</strong><p>HCA G2 · {number(c.nominal_power_kw)} kW</p></div><span className="station-status">Simulado</span></div>)}<div className="station-note">A telemetria deste protótipo é gerada pelo simulador.</div></section></div><div className="notice"><ShieldCheck size={21}/><div><strong>A inteligência participa do rateio.</strong><span>{a.pending} sessões aguardam revisão. Nenhuma delas entra no fechamento sem uma decisão registrada.</span></div><button className="text-button" onClick={()=>onNav('sessions')}>Revisar sessões<ArrowRight size={16}/></button></div></>;
+function ConsumptionChart({ prediction, daily = [] }) {
+  const history = prediction?.status === "ready" ? prediction.history : daily;
+  const data = history.map((d) => ({ day: d.date.slice(8), real: d.kwh }));
+  if (prediction?.future?.length) {
+    if (data.length) data[data.length - 1].prev = data.at(-1).real;
+    data.push(
+      ...prediction.future.map((d) => ({ day: d.date.slice(8), prev: d.kwh })),
+    );
+  }
+  return (
+    <div
+      className="chart"
+      role="img"
+      aria-label="Gráfico de consumo diário validado e previsão para o restante do mês"
+    >
+      <ResponsiveContainer width="100%" height="100%">
+        <ComposedChart
+          data={data}
+          margin={{ top: 12, right: 12, left: -20, bottom: 0 }}
+        >
+          <defs>
+            <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#17a687" stopOpacity={0.22} />
+              <stop offset="100%" stopColor="#17a687" stopOpacity={0.01} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid vertical={false} stroke="#e9eeeb" />
+          <XAxis
+            dataKey="day"
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 11, fill: "#7b8887" }}
+            minTickGap={15}
+          />
+          <YAxis
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 11, fill: "#7b8887" }}
+          />
+          <Tooltip
+            formatter={(v) => `${number(v)} kWh`}
+            labelFormatter={(v) => `Dia ${v}`}
+            contentStyle={{ border: "1px solid #dfe7e2", borderRadius: 10 }}
+          />
+          <Area
+            isAnimationActive={false}
+            type="monotone"
+            dataKey="real"
+            name="Realizado"
+            stroke="#12846e"
+            fill="url(#fill)"
+            strokeWidth={2.5}
+          />
+          <Line
+            isAnimationActive={false}
+            type="monotone"
+            dataKey="prev"
+            name="Previsão"
+            stroke="#8192ba"
+            strokeDasharray="5 5"
+            strokeWidth={2}
+            dot={false}
+          />
+        </ComposedChart>
+      </ResponsiveContainer>
+    </div>
+  );
 }
-export function SessionTable({rows,onDetail,compact=false}) {
-  return rows.length?<div className="table-wrap"><table><thead><tr><th>Sessão / início</th><th>Unidade</th><th>Energia</th>{!compact&&<th>Duração</th>}<th>Validação</th><th><span className="sr-only">Abrir</span></th></tr></thead><tbody>{rows.map(s=><tr key={s.id}><td><button className="session-link" onClick={()=>onDetail(s)}>{s.id}</button><small>{dateTime(s.started_at)}{s.status==='interrupted'?' · interrompida':''}</small></td><td>{s.unit_id ? `Ap. ${s.unit_id.slice(2)}` : 'Não identificada'}</td><td className="numeric">{number(s.energy_kwh)} <small className="inline">kWh</small>{s.cost_center==='promotion'&&<small>Gratuita</small>}</td>{!compact&&<td>{number(s.duration_minutes,0)} min</td>}<td><Badge status={s.eligibility}/></td><td><button className="icon-button" aria-label={`Detalhes ${s.id}`} onClick={()=>onDetail(s)}><ChevronRight size={17}/></button></td></tr>)}</tbody></table></div>:<Empty>Nenhuma sessão encontrada para estes filtros.</Empty>;
+function Overview({ data, onNav, onDetail }) {
+  const { analytics: a, forecast: f, sessions, catalog } = data;
+  return (
+    <>
+      <div className="stats">
+        <Stat
+          label="Energia validada"
+          value={number(a.energy_kwh)}
+          unit="kWh"
+          foot={`${a.sessions} sessões registradas no mês`}
+          icon={Zap}
+        />
+        <Stat
+          label="Rateio do período"
+          value={money(a.total_cents)}
+          foot="Consumo + taxas − créditos"
+          icon={CreditCard}
+        />
+        <Stat
+          label="Unidades ativas"
+          value={a.active_units}
+          unit={`/ ${catalog.units.length}`}
+          foot="Somente quem usa paga o consumo"
+          icon={Users}
+        />
+        <Stat
+          label="Sessões em revisão"
+          value={a.pending}
+          foot="Retidas antes da cobrança"
+          icon={ShieldCheck}
+          accent={a.pending ? "amber" : ""}
+        />
+      </div>
+      <div className="dashboard-grid">
+        <section className="panel consumption">
+          <div className="panel-head">
+            <div>
+              <h2>O ritmo da sua energia</h2>
+              <p>Consumo diário validado · kWh</p>
+            </div>
+            <div className="legend">
+              <span>Realizado</span>
+              <span>Previsto</span>
+            </div>
+          </div>
+          <ConsumptionChart prediction={f} daily={a.daily} />
+          <div className="chart-footer">
+            <span>
+              <span className="dot green" />
+              Energia registrada por sessão
+            </span>
+            <span>Corte da demonstração: 27 set. 2026</span>
+          </div>
+        </section>
+        <section className="insight">
+          <span className="eyebrow">
+            <Sparkles size={15} /> INTELIGÊNCIA EM AÇÃO
+          </span>
+          <h2>
+            Antecipe o fim
+            <br />
+            do mês.
+          </h2>
+          {f.status === "ready" ? (
+            <>
+              <div className="forecast-number">
+                {number(f.projected_kwh)} <small>kWh</small>
+              </div>
+              <p>projetados para o período, com base no histórico validado.</p>
+              <div className="insight-separator" />
+              <div className="insight-row">
+                <span>Ainda previstos</span>
+                <strong>{number(f.remaining_kwh)} kWh</strong>
+              </div>
+              <div className="insight-row">
+                <span>Erro médio da regressão</span>
+                <strong>{number(f.ridge_mae_kwh)} kWh/dia</strong>
+              </div>
+            </>
+          ) : (
+            <p>{f.explanation}</p>
+          )}
+          <button onClick={() => onNav("intelligence")}>
+            Entender a previsão
+            <ArrowUpRight size={17} />
+          </button>
+        </section>
+        <section className="panel">
+          <div className="panel-head">
+            <div>
+              <h2>Recargas recentes</h2>
+              <p>Rastreabilidade do início ao rateio</p>
+            </div>
+            <button className="text-button" onClick={() => onNav("sessions")}>
+              Ver todas
+              <ArrowRight size={15} />
+            </button>
+          </div>
+          <SessionTable
+            rows={sessions.slice(0, 5)}
+            onDetail={onDetail}
+            compact
+          />
+        </section>
+        <section className="panel station-panel">
+          <div className="panel-head">
+            <div>
+              <h2>Pontos de recarga</h2>
+              <p>Infraestrutura demonstrativa</p>
+            </div>
+            <Gauge size={20} />
+          </div>
+          {catalog.chargers.map((c) => (
+            <div className="station" key={c.id}>
+              <div className="station-icon">
+                <Zap size={20} />
+              </div>
+              <div>
+                <strong>{c.name}</strong>
+                <p>HCA G2 · {number(c.nominal_power_kw)} kW</p>
+              </div>
+              <span className="station-status">Simulado</span>
+            </div>
+          ))}
+          <div className="station-note">
+            A telemetria deste protótipo é gerada pelo simulador.
+          </div>
+        </section>
+      </div>
+      <div className="notice">
+        <ShieldCheck size={21} />
+        <div>
+          <strong>A inteligência participa do rateio.</strong>
+          <span>
+            {a.pending} sessões aguardam revisão. Nenhuma delas entra no
+            fechamento sem uma decisão registrada.
+          </span>
+        </div>
+        <button className="text-button" onClick={() => onNav("sessions")}>
+          Revisar sessões
+          <ArrowRight size={16} />
+        </button>
+      </div>
+    </>
+  );
 }
-function Sessions({data,onDetail}) {
-  const [status,setStatus]=useState('');const [unit,setUnit]=useState('');const [charger,setCharger]=useState('');const [state,setState]=useState('');
-  const rows=data.sessions.filter(s=>(!status||s.eligibility===status)&&(!unit||s.unit_id===unit)&&(!charger||s.charger_id===charger)&&(!state||s.status===state));
-  return <section className="panel"><div className="panel-head"><div><h2>Sessões registradas</h2><p>{rows.length} registros · horário de São Paulo</p></div></div><div className="filters"><select aria-label="Filtrar validação" value={status} onChange={e=>setStatus(e.target.value)}><option value="">Todas as validações</option value="eligible">Validadas</option><option value="pending">Em revisão</option><option value="excluded">Excluídas</option></select><select aria-label="Filtrar unidade" value={unit} onChange={e=>setUnit(e.target.value)}><option value="">Todas as unidades</option>{data.catalog.units.map(u=><option key={u.id} value={u.id}>{u.label}</option>)}</select><select aria-label="Filtrar carregador" value={charger} onChange={e=>setCharger(e.target.value)}><option value="">Todos os carregadores</option>{data.catalog.chargers.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select><select aria-label="Filtrar encerramento" value={state} onChange={e=>setState(e.target.value)}><option value="">Todos os encerramentos</option><option value="completed">Concluída</option><option value="interrupted">Interrompida</option></select></div><SessionTable rows={rows} onDetail={onDetail}/></section>;
+export function SessionTable({ rows, onDetail, compact = false }) {
+  return rows.length ? (
+    <div className="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Sessão / início</th>
+            <th>Unidade</th>
+            <th>Energia</th>
+            {!compact && <th>Duração</th>}
+            <th>Validação</th>
+            <th>
+              <span className="sr-only">Abrir</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((s) => (
+            <tr key={s.id}>
+              <td>
+                <button className="session-link" onClick={() => onDetail(s)}>
+                  {s.id}
+                </button>
+                <small>
+                  {dateTime(s.started_at)}
+                  {s.status === "interrupted" ? " · interrompida" : ""}
+                </small>
+              </td>
+              <td>
+                {s.unit_id ? `Ap. ${s.unit_id.slice(2)}` : "Não identificada"}
+              </td>
+              <td className="numeric">
+                {number(s.energy_kwh)} <small className="inline">kWh</small>
+                {s.cost_center === "promotion" && <small>Gratuita</small>}
+              </td>
+              {!compact && <td>{number(s.duration_minutes, 0)} min</td>}
+              <td>
+                <Badge status={s.eligibility} />
+              </td>
+              <td>
+                <button
+                  className="icon-button"
+                  aria-label={`Detalhes ${s.id}`}
+                  onClick={() => onDetail(s)}
+                >
+                  <ChevronRight size={17} />
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ) : (
+    <Empty>Nenhuma sessão encontrada para estes filtros.</Empty>
+  );
 }
-function Intelligence({data}) {
-  const f=data.forecast,m=data.model;
-  return <><div className="two-cols"><section className="panel padded"><span className="section-icon"><BrainCircuit/></span><h2>Uma barreira antes da cobrança</h2><p>O detector aprende o padrão das sessões históricas. Um desvio relevante retém a sessão e exige revisão humana antes de incluir o consumo na fatura.</p><div className="model-steps"><div><span>01</span><strong>Aprender</strong><p>{m.training_rows} sessões anteriores a {m.trained_before}</p></div><div><span>02</span><strong>Comparar</strong><p>Energia, duração, potência e ociosidade</p></div><div><span>03</span><strong>Reter</strong><p>Desvio robusto acima de {m.threshold}</p></div></div><div className="formula">z = |valor − mediana| / escala robusta</div><p className="muted">Escala = máximo entre 1,4826 × MAD e piso por variável. Modelo {m.version}. Regras de identificação e medição atuam antes da liberação.</p></section><section className="panel padded"><span className="section-icon"><Activity/></span><h2>Uma previsão que pode ser avaliada</h2>{f.status==='ready'?<><p>Regressão Ridge usa tendência e dia da semana para estimar kWh por dia. O modelo é comparado com uma média semanal e vence o de menor erro no período de validação.</p><div className="metric-pair"><div><small>MAE · regressão</small><strong>{number(f.ridge_mae_kwh)}<small>kWh/dia</small></strong></div><div><small>MAE · referência semanal</small><strong>{number(f.baseline_mae_kwh)}<small>kWh/dia</small></strong></div></div><p><strong>Selecionado:</strong> {f.selected_model==='ridge'?'Regressão Ridge':'Média por dia da semana'}</p><p className="muted">Treino: {f.training_days} dias até {f.training_end}. Validação: {f.validation_days} dias, de {f.validation_start} a {f.validation_end}. Sem embaralhar passado e futuro.</p></>:<p>{f.explanation}</p>}</section></div>{f.status==='ready'&&<section className="panel"><div className="panel-head"><div><h2>Previsão do mês</h2><p>{number(f.observed_kwh)} kWh realizados + {number(f.remaining_kwh)} kWh previstos = {number(f.projected_kwh)} kWh</p></div></div><ConsumptionChart prediction={f}/></section>}<div className="notice neutral"><CircleAlert/><p><strong>O que esta demonstração comprova</strong><br/>O treinamento, a inferência e sua integração ao rateio funcionam sobre dados sintéticos. A previsão é de energia, não de pico elétrico. Desempenho real depende de validação com dados do laboratório.</p></div></>;
+function Sessions({ data, onDetail }) {
+  const [status, setStatus] = useState("");
+  const [unit, setUnit] = useState("");
+  const [charger, setCharger] = useState("");
+  const [state, setState] = useState("");
+  const rows = data.sessions.filter(
+    (s) =>
+      (!status || s.eligibility === status) &&
+      (!unit || s.unit_id === unit) &&
+      (!charger || s.charger_id === charger) &&
+      (!state || s.status === state),
+  );
+  return (
+    <section className="panel">
+      <div className="panel-head">
+        <div>
+          <h2>Sessões registradas</h2>
+          <p>{rows.length} registros · horário de São Paulo</p>
+        </div>
+      </div>
+      <div className="filters">
+        <select
+          aria-label="Filtrar validação"
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+        >
+          <option value="">Todas as validações</option>
+          <option value="eligible">Validadas</option>
+          <option value="pending">Em revisão</option>
+          <option value="excluded">Excluídas</option>
+        </select>
+        <select
+          aria-label="Filtrar unidade"
+          value={unit}
+          onChange={(e) => setUnit(e.target.value)}
+        >
+          <option value="">Todas as unidades</option>
+          {data.catalog.units.map((u) => (
+            <option key={u.id} value={u.id}>
+              {u.label}
+            </option>
+          ))}
+        </select>
+        <select
+          aria-label="Filtrar carregador"
+          value={charger}
+          onChange={(e) => setCharger(e.target.value)}
+        >
+          <option value="">Todos os carregadores</option>
+          {data.catalog.chargers.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+        <select
+          aria-label="Filtrar encerramento"
+          value={state}
+          onChange={(e) => setState(e.target.value)}
+        >
+          <option value="">Todos os encerramentos</option>
+          <option value="completed">Concluída</option>
+          <option value="interrupted">Interrompida</option>
+        </select>
+      </div>
+      <SessionTable rows={rows} onDetail={onDetail} />
+    </section>
+  );
 }
-function Billing({data,onInvoice,onConfigure,onCredit,onCloseMonth,onExport,manager}) {
-  const b=data.billing,t=b.tariff;
-  return <><div className="billing-top"><section className="panel padded"><span className="eyebrow">{b.closed?'DEMONSTRATIVO FECHADO':'PRÉVIA DO RATEIO'}</span><h2 className="big-total">{money(b.total_cents)}</h2><p>{b.closed?'Snapshot preservado. Os valores não mudam após o fechamento.':`${b.pending_count} sessões retidas fora desta prévia. Resolva todas para fechar.`}</p></section><section className="panel padded tariff-card"><div><h2>Regra aplicada ao período</h2>{manager&&!b.closed&&<button className="text-button" onClick={onConfigure}><Settings2 size={16}/>Configurar</button>}</div><dl><dt>Energia</dt><dd>{money(Number(t.tariff_kwh)*100)} / kWh</dd><dt>Operação</dt><dd>{money(Number(t.session_fee)*100)} / sessão</dd><dt>Ociosidade</dt><dd>{money(Number(t.idle_fee)*100)} / min após {t.idle_grace_minutes} min</dd><dt>Perdas / quota fixa</dt><dd>{number(Number(t.loss_percent))}% / {money(Number(t.fixed_fee)*100)} por unidade</dd></dl></section></div><section className="panel"><div className="panel-head"><div><h2>Demonstrativo por unidade</h2><p>Valores em reais · centavos arredondados por componente</p></div><div className="button-row"><button className="secondary" onClick={onExport}><ArrowDownToLine size={16}/>Exportar CSV</button>{manager&&!b.closed&&<button className="secondary" onClick={onCredit}><Plus size={16}/>Crédito</button>}</div></div><div className="table-wrap"><table><thead><tr><th>Unidade</th><th>Sessões válidas</th><th>Energia</th><th>Créditos</th><th>Total</th><th/></tr></thead><tbody>{b.units.map(u=><tr key={u.unit_id}><td><strong>{u.label}</strong></td><td>{u.items.length}</td><td>{number(u.energy_kwh)} kWh</td><td>{money(u.credit_cents)}</td><td className="numeric"><strong>{money(u.total_cents)}</strong></td><td><button className="text-button" onClick={()=>onInvoice(u)}>Ver cálculo<ChevronRight size={15}/></button></td></tr>)}</tbody></table></div><div className="panel-bottom"><p>Recargas gratuitas ficam no centro promocional. Unidades sem consumo não pagam energia.</p>{manager&&!b.closed&&<button className="primary" onClick={onCloseMonth}><FileCheck2 size={17}/>Fechar mês</button>}{b.closed&&<span className="badge eligible"><CheckCheck size={15}/>Fechado em {dateTime(b.closed_at)}</span>}</div></section></>;
+function Intelligence({ data }) {
+  const f = data.forecast,
+    m = data.model;
+  return (
+    <>
+      <div className="two-cols">
+        <section className="panel padded">
+          <span className="section-icon">
+            <BrainCircuit />
+          </span>
+          <h2>Uma barreira antes da cobrança</h2>
+          <p>
+            O detector aprende o padrão das sessões históricas. Um desvio
+            relevante retém a sessão e exige revisão humana antes de incluir o
+            consumo na fatura.
+          </p>
+          <div className="model-steps">
+            <div>
+              <span>01</span>
+              <strong>Aprender</strong>
+              <p>
+                {m.training_rows} sessões anteriores a {m.trained_before}
+              </p>
+            </div>
+            <div>
+              <span>02</span>
+              <strong>Comparar</strong>
+              <p>Energia, duração, potência e ociosidade</p>
+            </div>
+            <div>
+              <span>03</span>
+              <strong>Reter</strong>
+              <p>Desvio robusto acima de {m.threshold}</p>
+            </div>
+          </div>
+          <div className="formula">z = |valor − mediana| / escala robusta</div>
+          <p className="muted">
+            Escala = máximo entre 1,4826 × MAD e piso por variável. Modelo{" "}
+            {m.version}. Regras de identificação e medição atuam antes da
+            liberação.
+          </p>
+        </section>
+        <section className="panel padded">
+          <span className="section-icon">
+            <Activity />
+          </span>
+          <h2>Uma previsão que pode ser avaliada</h2>
+          {f.status === "ready" ? (
+            <>
+              <p>
+                Regressão Ridge usa tendência e dia da semana para estimar kWh
+                por dia. O modelo é comparado com uma média semanal e vence o de
+                menor erro no período de validação.
+              </p>
+              <div className="metric-pair">
+                <div>
+                  <small>MAE · regressão</small>
+                  <strong>
+                    {number(f.ridge_mae_kwh)}
+                    <small>kWh/dia</small>
+                  </strong>
+                </div>
+                <div>
+                  <small>MAE · referência semanal</small>
+                  <strong>
+                    {number(f.baseline_mae_kwh)}
+                    <small>kWh/dia</small>
+                  </strong>
+                </div>
+              </div>
+              <p>
+                <strong>Selecionado:</strong>{" "}
+                {f.selected_model === "ridge"
+                  ? "Regressão Ridge"
+                  : "Média por dia da semana"}
+              </p>
+              <p className="muted">
+                Treino: {f.training_days} dias até {f.training_end}. Validação:{" "}
+                {f.validation_days} dias, de {f.validation_start} a{" "}
+                {f.validation_end}. Sem embaralhar passado e futuro.
+              </p>
+            </>
+          ) : (
+            <p>{f.explanation}</p>
+          )}
+        </section>
+      </div>
+      {f.status === "ready" && (
+        <section className="panel">
+          <div className="panel-head">
+            <div>
+              <h2>Previsão do mês</h2>
+              <p>
+                {number(f.observed_kwh)} kWh realizados +{" "}
+                {number(f.remaining_kwh)} kWh previstos ={" "}
+                {number(f.projected_kwh)} kWh
+              </p>
+            </div>
+          </div>
+          <ConsumptionChart prediction={f} />
+        </section>
+      )}
+      <div className="notice neutral">
+        <CircleAlert />
+        <p>
+          <strong>O que esta demonstração comprova</strong>
+          <br />O treinamento, a inferência e sua integração ao rateio funcionam
+          sobre dados sintéticos. A previsão é de energia, não de pico elétrico.
+          Desempenho real depende de validação com dados do laboratório.
+        </p>
+      </div>
+    </>
+  );
 }
-function Invoice({unit,onClose,month,closed}) {return <Modal title={unit.label} subtitle={`${monthName(month)} · ${closed?'Fatura fechada':'Prévia — valores ainda podem mudar'}`} onClose={onClose} wide><div className="invoice-total"><span>Total da unidade</span><strong>{money(unit.total_cents)}</strong></div><div className="table-wrap"><table><thead><tr><th>Sessão</th><th>kWh</th><th>Energia</th><th>Operação</th><th>Ociosidade</th><th>Perdas</th><th>Total</th></tr></thead><tbody>{unit.items.map(i=><tr key={i.session_id}><td>{i.session_id}<small>{i.cost_center==='promotion'?'Cortesia · promocional':dateTime(i.started_at)}</small></td><td>{number(i.energy_kwh)}</td><td>{money(i.energy_cents)}</td><td>{money(i.operation_cents)}</td><td>{money(i.idle_cents)}</td><td>{money(i.loss_cents)}</td><td><strong>{money(i.total_cents)}</strong></td></tr>)}</tbody></table></div>{unit.items.length===0&&<Empty>Nenhuma sessão cobrável neste mês.</Empty>}<div className="invoice-footer"><p>Quota fixa: <strong>{money(unit.fixed_cents)}</strong></p><p>Créditos: <strong>− {money(unit.credit_cents)}</strong></p>{unit.credits.map(c=><p key={c.id}>{c.reason} · {money(c.amount_cents)}</p>)}<p className="muted">Competência pelo início da sessão em São Paulo. Um saldo negativo representa crédito da unidade, sem pagamento automático.</p></div></Modal>;}
-function SessionDetail({session:s,onClose,onReview,manager,busy}) {
-  const [reason,setReason]=useState('');
-  return <Modal title="Detalhes da recarga" subtitle={s.id} onClose={onClose}><div className="detail-summary"><Badge status={s.eligibility}/><strong>{number(s.energy_kwh)} <small>kWh</small></strong></div><dl className="detail-list"><dt>Unidade / veículo</dt><dd>{s.unit_id||'Não identificada'} / {s.vehicle_id||'Não identificado'}</dd><dt>Início → fim</dt><dd>{dateTime(s.started_at)} → {dateTime(s.ended_at)}</dd><dt>Duração / ociosidade</dt><dd>{number(s.duration_minutes,0)} min / {s.idle_minutes} min</dd><dt>Potência média ativa</dt><dd>{number(s.average_power_kw)} kW</dd><dt>Encerramento</dt><dd>{s.status==='interrupted'?'Interrompida':'Concluída'}</dd><dt>Centro de custo</dt><dd>{s.cost_center==='promotion'?'Promocional · gratuita':'Morador'}</dd></dl><div className={s.eligibility==='pending'?'review-note':'demo-note'}><ShieldCheck size={20}/><div><strong>Análise de elegibilidade</strong>{s.quality_issues.map((q,i)=><p key={i}>{q}</p>)}<p>{s.anomaly.explanation}</p><small>Modelo: {s.anomaly.version||'aquecimento do histórico'}</small></div></div>{s.review_reason&&<p className="review-reason"><strong>Decisão registrada:</strong> {s.review_reason}</p>}{manager&&s.eligibility==='pending'&&<form onSubmit={e=>e.preventDefault()}><label>Justificativa da decisão<textarea minLength={10} maxLength={500} value={reason} onChange={e=>setReason(e.target.value)} placeholder="Explique o que foi verificado (mínimo 10 caracteres)"/></label><div className="modal-actions"><button className="secondary danger" disabled={busy||reason.trim().length<10} onClick={()=>onReview(s,'exclude',reason)}>Excluir do rateio</button><button className="primary" disabled={busy||reason.trim().length<10||s.quality_issues.length>0} onClick={()=>onReview(s,'approve',reason)}>Liberar cobrança</button></div>{s.quality_issues.length>0&&<p className="muted">Falhas de identificação ou medição exigem exclusão e nova importação corrigida.</p>}</form>}</Modal>;
+function Billing({
+  data,
+  onInvoice,
+  onConfigure,
+  onCredit,
+  onCloseMonth,
+  onExport,
+  manager,
+}) {
+  const b = data.billing,
+    t = b.tariff;
+  return (
+    <>
+      <div className="billing-top">
+        <section className="panel padded">
+          <span className="eyebrow">
+            {b.closed ? "DEMONSTRATIVO FECHADO" : "PRÉVIA DO RATEIO"}
+          </span>
+          <h2 className="big-total">{money(b.total_cents)}</h2>
+          <p>
+            {b.closed
+              ? "Snapshot preservado. Os valores não mudam após o fechamento."
+              : `${b.pending_count} sessões retidas fora desta prévia. ${manager ? "Resolva todas para fechar." : "Aguardando revisão do gestor."}`}
+          </p>
+        </section>
+        <section className="panel padded tariff-card">
+          <div>
+            <h2>Regra aplicada ao período</h2>
+            {manager && !b.closed && (
+              <button className="text-button" onClick={onConfigure}>
+                <Settings2 size={16} />
+                Configurar
+              </button>
+            )}
+          </div>
+          <dl>
+            <dt>Energia</dt>
+            <dd>{money(Number(t.tariff_kwh) * 100)} / kWh</dd>
+            <dt>Operação</dt>
+            <dd>{money(Number(t.session_fee) * 100)} / sessão</dd>
+            <dt>Ociosidade</dt>
+            <dd>
+              {money(Number(t.idle_fee) * 100)} / min após{" "}
+              {t.idle_grace_minutes} min
+            </dd>
+            <dt>Perdas / quota fixa</dt>
+            <dd>
+              {number(Number(t.loss_percent))}% /{" "}
+              {money(Number(t.fixed_fee) * 100)} por unidade
+            </dd>
+          </dl>
+        </section>
+      </div>
+      <section className="panel">
+        <div className="panel-head">
+          <div>
+            <h2>Demonstrativo por unidade</h2>
+            <p>Valores em reais · centavos arredondados por componente</p>
+          </div>
+          <div className="button-row">
+            <button className="secondary" onClick={onExport}>
+              <ArrowDownToLine size={16} />
+              Exportar CSV
+            </button>
+            {manager && !b.closed && (
+              <button className="secondary" onClick={onCredit}>
+                <Plus size={16} />
+                Crédito
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Unidade</th>
+                <th>Sessões válidas</th>
+                <th>Energia</th>
+                <th>Créditos</th>
+                <th>Total</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {b.units.map((u) => (
+                <tr key={u.unit_id}>
+                  <td>
+                    <strong>{u.label}</strong>
+                  </td>
+                  <td>{u.items.length}</td>
+                  <td>{number(u.energy_kwh)} kWh</td>
+                  <td>{money(u.credit_cents)}</td>
+                  <td className="numeric">
+                    <strong>{money(u.total_cents)}</strong>
+                  </td>
+                  <td>
+                    <button
+                      className="text-button"
+                      onClick={() => onInvoice(u)}
+                    >
+                      Ver cálculo
+                      <ChevronRight size={15} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="panel-bottom">
+          <p>
+            Recargas gratuitas ficam no centro promocional. Unidades sem consumo
+            não pagam energia.
+          </p>
+          {manager && !b.closed && (
+            <button className="primary" onClick={onCloseMonth}>
+              <FileCheck2 size={17} />
+              Fechar mês
+            </button>
+          )}
+          {b.closed && (
+            <span className="badge eligible">
+              <CheckCheck size={15} />
+              Fechado em {dateTime(b.closed_at)}
+            </span>
+          )}
+        </div>
+      </section>
+    </>
+  );
 }
-function Simulation({onClose,onSubmit,busy,units}) {const [scenario,setScenario]=useState('normal'),[unit,setUnit]=useState('ap101');return <Modal title="Simular uma recarga" subtitle="O evento passa pela mesma validação, IA e persistência da API." onClose={onClose}><form onSubmit={e=>{e.preventDefault();onSubmit(scenario,unit);}}><label>Cenário<select value={scenario} onChange={e=>setScenario(e.target.value)}><option value="normal">Sessão normal</option><option value="interrupted">Interrupção de energia</option><option value="anomaly">Duração atípica detectada pela IA</option><option value="unidentified">Usuário não identificado</option><option value="meter_error">Falha de medição</option><option value="promotion">Recarga gratuita promocional</option></select></label><label>Unidade<select value={unit} onChange={e=>setUnit(e.target.value)}>{units.map(u=><option key={u.id} value={u.id}>{u.label}</option>)}</select></label><p className="muted">Dados sintéticos. Sessão datada do dia 26 do mês selecionado. Nenhum equipamento físico é acionado.</p><button className="primary full" disabled={busy}><Play size={17}/>{busy?'Registrando…':'Gerar e analisar sessão'}</button></form></Modal>;}
-function Configuration({tariff,onClose,onSubmit,busy}) {const [form,setForm]=useState(tariff);const fields=[['tariff_kwh','Tarifa por kWh (R$)','0.000001'],['session_fee','Operação por sessão (R$)','0.01'],['idle_fee','Ociosidade por minuto (R$)','0.0001'],['idle_grace_minutes','Franquia de ociosidade (min)','1'],['loss_percent','Ajuste de perdas (%)','0.0001'],['fixed_fee','Quota fixa por unidade (R$)','0.01']];return <Modal title="Regras do rateio" subtitle="Parâmetros didáticos do período. Não representam tarifa da distribuidora." onClose={onClose}><form onSubmit={e=>{e.preventDefault();onSubmit({...form,idle_grace_minutes:Number(form.idle_grace_minutes)});}}><div className="form-grid">{fields.map(([key,label,step])=><label key={key}>{label}<input type="number" min="0" max={key==='loss_percent'?30:key==='idle_grace_minutes'?1440:10000} step={step} required value={form[key]} onChange={e=>setForm({...form,[key]:e.target.value})}/></label>)}</div><button disabled={busy} className="primary full">Salvar e recalcular prévia</button></form></Modal>;}
-function CreditForm({units,onClose,onSubmit,busy}) {const [unit,setUnit]=useState(units[0].id),[amount,setAmount]=useState('5.00'),[reason,setReason]=useState('');const [id]=useState(()=>crypto.randomUUID());return <Modal title="Registrar crédito" subtitle="Um ajuste auditável aplicado antes do fechamento." onClose={onClose}><form onSubmit={e=>{e.preventDefault();onSubmit({id,unit_id:unit,amount,reason});}}><label>Unidade<select value={unit} onChange={e=>setUnit(e.target.value)}>{units.map(u=><option key={u.id} value={u.id}>{u.label}</option>)}</select></label><label>Valor (R$)<input type="number" min="0.01" max="10000" step="0.01" required value={amount} onChange={e=>setAmount(e.target.value)}/></label><label>Motivo<textarea minLength={10} maxLength={500} required value={reason} onChange={e=>setReason(e.target.value)}/></label><button className="primary full" disabled={busy||reason.trim().length<10}>Aplicar crédito</button></form></Modal>;}
+function Invoice({ unit, onClose, month, closed }) {
+  return (
+    <Modal
+      title={unit.label}
+      subtitle={`${monthName(month)} · ${closed ? "Fatura fechada" : "Prévia — valores ainda podem mudar"}`}
+      onClose={onClose}
+      wide
+    >
+      <div className="invoice-total">
+        <span>Total da unidade</span>
+        <strong>{money(unit.total_cents)}</strong>
+      </div>
+      <div className="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Sessão</th>
+              <th>kWh</th>
+              <th>Energia</th>
+              <th>Operação</th>
+              <th>Ociosidade</th>
+              <th>Perdas</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {unit.items.map((i) => (
+              <tr key={i.session_id}>
+                <td>
+                  {i.session_id}
+                  <small>
+                    {i.cost_center === "promotion"
+                      ? "Cortesia · promocional"
+                      : dateTime(i.started_at)}
+                  </small>
+                </td>
+                <td>{number(i.energy_kwh)}</td>
+                <td>{money(i.energy_cents)}</td>
+                <td>{money(i.operation_cents)}</td>
+                <td>{money(i.idle_cents)}</td>
+                <td>{money(i.loss_cents)}</td>
+                <td>
+                  <strong>{money(i.total_cents)}</strong>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {unit.items.length === 0 && (
+        <Empty>Nenhuma sessão cobrável neste mês.</Empty>
+      )}
+      <div className="invoice-footer">
+        <p>
+          Quota fixa: <strong>{money(unit.fixed_cents)}</strong>
+        </p>
+        <p>
+          Créditos: <strong>− {money(unit.credit_cents)}</strong>
+        </p>
+        {unit.credits.map((c) => (
+          <p key={c.id}>
+            {c.reason} · {money(c.amount_cents)}
+          </p>
+        ))}
+        <p className="muted">
+          Competência pelo início da sessão em São Paulo. Um saldo negativo
+          representa crédito da unidade, sem pagamento automático.
+        </p>
+      </div>
+    </Modal>
+  );
+}
+function SessionDetail({ session: s, onClose, onReview, manager, busy }) {
+  const [reason, setReason] = useState("");
+  return (
+    <Modal title="Detalhes da recarga" subtitle={s.id} onClose={onClose}>
+      <div className="detail-summary">
+        <Badge status={s.eligibility} />
+        <strong>
+          {number(s.energy_kwh)} <small>kWh</small>
+        </strong>
+      </div>
+      <dl className="detail-list">
+        <dt>Unidade / veículo</dt>
+        <dd>
+          {s.unit_id || "Não identificada"} /{" "}
+          {s.vehicle_id || "Não identificado"}
+        </dd>
+        <dt>Início → fim</dt>
+        <dd>
+          {dateTime(s.started_at)} → {dateTime(s.ended_at)}
+        </dd>
+        <dt>Duração / ociosidade</dt>
+        <dd>
+          {number(s.duration_minutes, 0)} min / {s.idle_minutes} min
+        </dd>
+        <dt>Potência média ativa</dt>
+        <dd>{number(s.average_power_kw)} kW</dd>
+        <dt>Encerramento</dt>
+        <dd>{s.status === "interrupted" ? "Interrompida" : "Concluída"}</dd>
+        <dt>Centro de custo</dt>
+        <dd>
+          {s.cost_center === "promotion" ? "Promocional · gratuita" : "Morador"}
+        </dd>
+      </dl>
+      <div
+        className={s.eligibility === "pending" ? "review-note" : "demo-note"}
+      >
+        <ShieldCheck size={20} />
+        <div>
+          <strong>Análise de elegibilidade</strong>
+          {s.quality_issues.map((q, i) => (
+            <p key={i}>{q}</p>
+          ))}
+          <p>{s.anomaly.explanation}</p>
+          <small>
+            Modelo: {s.anomaly.version || "aquecimento do histórico"}
+          </small>
+        </div>
+      </div>
+      {s.review_reason && (
+        <p className="review-reason">
+          <strong>Decisão registrada:</strong> {s.review_reason}
+        </p>
+      )}
+      {manager && s.eligibility === "pending" && (
+        <form onSubmit={(e) => e.preventDefault()}>
+          <label>
+            Justificativa da decisão
+            <textarea
+              minLength={10}
+              maxLength={500}
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Explique o que foi verificado (mínimo 10 caracteres)"
+            />
+          </label>
+          <div className="modal-actions">
+            <button
+              className="secondary danger"
+              disabled={busy || reason.trim().length < 10}
+              onClick={() => onReview(s, "exclude", reason)}
+            >
+              Excluir do rateio
+            </button>
+            <button
+              className="primary"
+              disabled={
+                busy || reason.trim().length < 10 || s.quality_issues.length > 0
+              }
+              onClick={() => onReview(s, "approve", reason)}
+            >
+              Liberar cobrança
+            </button>
+          </div>
+          {s.quality_issues.length > 0 && (
+            <p className="muted">
+              Falhas de identificação ou medição exigem exclusão e nova
+              importação corrigida.
+            </p>
+          )}
+        </form>
+      )}
+    </Modal>
+  );
+}
+function Simulation({ onClose, onSubmit, busy, units }) {
+  const [scenario, setScenario] = useState("normal"),
+    [unit, setUnit] = useState("ap101");
+  return (
+    <Modal
+      title="Simular uma recarga"
+      subtitle="O evento passa pela mesma validação, IA e persistência da API."
+      onClose={onClose}
+    >
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit(scenario, unit);
+        }}
+      >
+        <label>
+          Cenário
+          <select
+            value={scenario}
+            onChange={(e) => setScenario(e.target.value)}
+          >
+            <option value="normal">Sessão normal</option>
+            <option value="interrupted">Interrupção de energia</option>
+            <option value="anomaly">Duração atípica detectada pela IA</option>
+            <option value="unidentified">Usuário não identificado</option>
+            <option value="meter_error">Falha de medição</option>
+            <option value="promotion">Recarga gratuita promocional</option>
+          </select>
+        </label>
+        <label>
+          Unidade
+          <select value={unit} onChange={(e) => setUnit(e.target.value)}>
+            {units.map((u) => (
+              <option key={u.id} value={u.id}>
+                {u.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <p className="muted">
+          Dados sintéticos. Sessão datada do dia 26 do mês selecionado. Nenhum
+          equipamento físico é acionado.
+        </p>
+        <button className="primary full" disabled={busy}>
+          <Play size={17} />
+          {busy ? "Registrando…" : "Gerar e analisar sessão"}
+        </button>
+      </form>
+    </Modal>
+  );
+}
+function Configuration({ tariff, onClose, onSubmit, busy }) {
+  const [form, setForm] = useState(tariff);
+  const fields = [
+    ["tariff_kwh", "Tarifa por kWh (R$)", "0.000001"],
+    ["session_fee", "Operação por sessão (R$)", "0.01"],
+    ["idle_fee", "Ociosidade por minuto (R$)", "0.0001"],
+    ["idle_grace_minutes", "Franquia de ociosidade (min)", "1"],
+    ["loss_percent", "Ajuste de perdas (%)", "0.0001"],
+    ["fixed_fee", "Quota fixa por unidade (R$)", "0.01"],
+  ];
+  return (
+    <Modal
+      title="Regras do rateio"
+      subtitle="Parâmetros didáticos do período. Não representam tarifa da distribuidora."
+      onClose={onClose}
+    >
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit({
+            ...form,
+            idle_grace_minutes: Number(form.idle_grace_minutes),
+          });
+        }}
+      >
+        <div className="form-grid">
+          {fields.map(([key, label, step]) => (
+            <label key={key}>
+              {label}
+              <input
+                type="number"
+                min="0"
+                max={
+                  key === "loss_percent"
+                    ? 30
+                    : key === "idle_grace_minutes"
+                      ? 1440
+                      : 10000
+                }
+                step={step}
+                required
+                value={form[key]}
+                onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+              />
+            </label>
+          ))}
+        </div>
+        <button disabled={busy} className="primary full">
+          Salvar e recalcular prévia
+        </button>
+      </form>
+    </Modal>
+  );
+}
+function CreditForm({ units, onClose, onSubmit, busy }) {
+  const [unit, setUnit] = useState(units[0].id),
+    [amount, setAmount] = useState("5.00"),
+    [reason, setReason] = useState("");
+  const [id] = useState(() => crypto.randomUUID());
+  return (
+    <Modal
+      title="Registrar crédito"
+      subtitle="Um ajuste auditável aplicado antes do fechamento."
+      onClose={onClose}
+    >
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit({ id, unit_id: unit, amount, reason });
+        }}
+      >
+        <label>
+          Unidade
+          <select value={unit} onChange={(e) => setUnit(e.target.value)}>
+            {units.map((u) => (
+              <option key={u.id} value={u.id}>
+                {u.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Valor (R$)
+          <input
+            type="number"
+            min="0.01"
+            max="10000"
+            step="0.01"
+            required
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
+        </label>
+        <label>
+          Motivo
+          <textarea
+            minLength={10}
+            maxLength={500}
+            required
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+          />
+        </label>
+        <button
+          className="primary full"
+          disabled={busy || reason.trim().length < 10}
+        >
+          Aplicar crédito
+        </button>
+      </form>
+    </Modal>
+  );
+}
 
 function App() {
-  const [auth,setAuth]=useState(()=>{try{return JSON.parse(sessionStorage.getItem('chargeops-auth'));}catch{return null;}});
-  const [page,setPage]=useState('overview'),[month,setMonth]=useState('2026-09'),[revision,setRevision]=useState(0);
-  const [data,setData]=useState(null),[error,setError]=useState(''),[toast,setToast]=useState(''),[loading,setLoading]=useState(false),[busy,setBusy]=useState(false),[modal,setModal]=useState(null);
-  const manager=auth?.user.role==='manager';
-  function login(value){setAuth(value);sessionStorage.setItem('chargeops-auth',JSON.stringify(value));setPage(value.user.role==='manager'?'overview':'billing');}
-  function logout(){request('/auth/logout',auth?.token,{method:'POST'}).catch(()=>{});setAuth(null);setData(null);sessionStorage.removeItem('chargeops-auth');}
-  useEffect(()=>{if(!toast)return;const id=setTimeout(()=>setToast(''),5500);return()=>clearTimeout(id);},[toast]);
-  useEffect(()=>{
-    if(!auth)return;let cancelled=false;setLoading(true);setError('');
-    async function load(){try{const paths=['/catalog',`/sessions?month=${month}`,`/billing/${month}`,...(manager?[`/analytics?month=${month}`,`/forecast?month=${month}`,'/model','/audit']:[])];const responses=await Promise.all(paths.map(p=>request(p,auth.token)));if(!cancelled){const [catalog,sessions,billing,analytics,forecast,model,audit]=responses;setData({catalog,sessions,billing,analytics,forecast,model,audit});}}catch(e){if(!cancelled){setError(e.message);if(e.status===401){setAuth(null);sessionStorage.removeItem('chargeops-auth');}}}finally{if(!cancelled)setLoading(false);}}
-    load();return()=>{cancelled=true;};
-  },[auth,month,revision,manager]);
-  async function mutate(path,body,message,method='POST'){setBusy(true);setError('');try{const result=await request(path,auth.token,{method,body:JSON.stringify(body)});setModal(null);setRevision(r=>r+1);setToast(message);return result;}catch(e){setError(e.message);return null;}finally{setBusy(false);}}
-  async function exportCsv(){try{const response=await fetch(`/api/billing/${month}/csv`,{headers:{Authorization:`Bearer ${auth.token}`}});if(!response.ok)throw new Error('Não foi possível exportar o CSV.');const url=URL.createObjectURL(await response.blob());const a=document.createElement('a');a.href=url;a.download=`rateio-${month}.csv`;a.click();URL.revokeObjectURL(url);}catch(e){setError(e.message);}}
-  if(!auth)return <Login onLogin={login}/>;
-  const actualPage=!manager&& !['sessions','billing'].includes(page)?'billing':page;
-  return <div className="app"><aside className="sidebar"><Logo/><div className="workspace"><div className="workspace-avatar">EC</div><div><strong>Condomínio exemplo</strong><small>Ambiente de demonstração</small></div></div><span className="nav-label">{manager?'GESTÃO DA OPERAÇÃO':'MINHA UNIDADE'}</span><nav>{NAV.filter(([key])=>manager||['sessions','billing'].includes(key)).map(([key,label,Icon])=><button key={key} className={actualPage===key?'active':''} onClick={()=>setPage(key)}><Icon size={19}/>{!manager&&key==='billing'?'Meu demonstrativo':label}{key==='sessions'&&data?.analytics?.pending>0&&<span className="nav-count">{data.analytics.pending}</span>}</button>)}</nav><div className="sidebar-bottom"><div className="project-note"><span className="dot mint"/> GOODWE + FIAP<small>Enterprise Challenge · Sprint 02</small></div><div className="profile"><div className="avatar">{manager?'GE':'AM'}</div><div><strong>{manager?'Gestor':'Ana Martins'}</strong><small>{manager?'Visão administrativa':'Apartamento 101'}</small></div><button aria-label="Sair" className="icon-button" onClick={logout}><LogOut size={18}/></button></div></div></aside><main><header className="topbar"><div><span className="breadcrumb">ChargeOps</span><ChevronRight size={14}/><strong>{NAV.find(n=>n[0]===actualPage)?.[1]}</strong></div><span className="demo-tag"><span className="dot green"/>Dados simulados</span></header><div className="content"><div className="page-heading"><div><span className="eyebrow">{manager?'CONTROLE, CLAREZA E CONFIANÇA':'SEU CONSUMO, SEM SURPRESAS'}</span><h1>{titles[actualPage]}</h1><p>{manager?'Acompanhe sua infraestrutura de recarga e o que merece atenção.':'Consulte apenas as sessões e os valores da sua unidade.'}</p></div><div className="heading-actions"><select className="month-select" aria-label="Mês de referência" value={month} onChange={e=>{setMonth(e.target.value);setModal(null);}}>{(data?.catalog.months||['2026-09']).map(m=><option value={m} key={m}>{monthName(m)}</option>)}</select>{manager&&<button className="primary" disabled={busy||loading||data?.billing.closed} onClick={()=>setModal({type:'simulate'})}><Plus size={18}/>Simular recarga</button>}</div></div>{error&&<div className="error global-error" role="alert"><CircleAlert size={18}/>{error}<button onClick={()=>setError('')} aria-label="Dispensar erro"><X size={16}/></button></div>}{toast&&<div className="toast" role="status"><Check size={18}/>{toast}</div>}{loading?<div className="loading"><div className="spinner"/>Atualizando sessões, rateio e inteligência…</div>:data?<>{actualPage==='overview'&&<Overview data={data} onNav={setPage} onDetail={s=>setModal({type:'session',session:s})}/>} {actualPage==='sessions'&&<Sessions data={data} onDetail={s=>setModal({type:'session',session:s})}/>} {actualPage==='intelligence'&&<Intelligence data={data}/>} {actualPage==='billing'&&<Billing data={data} manager={manager} onInvoice={u=>setModal({type:'invoice',unit:u})} onConfigure={()=>setModal({type:'tariff'})} onCredit={()=>setModal({type:'credit'})} onCloseMonth={()=>setModal({type:'close'})} onExport={exportCsv}/>} {actualPage==='audit'&&<section className="panel"><div className="panel-head"><div><h2>Trilha de auditoria</h2><p>Últimos 100 eventos da operação · todos os meses</p></div><ShieldCheck/></div><div className="table-wrap"><table><thead><tr><th>Quando</th><th>Evento</th><th>Entidade / ator</th><th>Registro</th></tr></thead><tbody>{data.audit.map(a=><tr key={a.id}><td>{dateTime(a.created_at)}</td><td><code>{a.action}</code></td><td>{a.entity_id}<small>{a.actor}</small></td><td className="audit-detail">{JSON.stringify(a.detail)}</td></tr>)}</tbody></table></div></section>}</>:<Empty>Não foi possível carregar a operação. <button onClick={()=>setRevision(r=>r+1)}>Tentar novamente</button></Empty>}<footer className="page-footer"><span>EV ChargeOps · Grupo 22 · FIAP 2026</span><span>Dados sintéticos · Sem cobrança financeira real</span></footer></div></main>{data&&modal?.type==='simulate'&&<Simulation units={data.catalog.units} busy={busy} onClose={()=>setModal(null)} onSubmit={async(scenario,unit_id)=>{const result=await mutate('/simulate',{scenario,unit_id,month},'Sessão registrada e analisada.');if(result){setPage('sessions');setModal({type:'session',session:result});}}}/>} {modal?.type==='session'&&<SessionDetail session={modal.session} manager={manager} busy={busy} onClose={()=>setModal(null)} onReview={(s,decision,reason)=>mutate(`/sessions/${s.id}/review`,{decision,reason},'Decisão registrada na auditoria.')}/>} {modal?.type==='invoice'&&<Invoice unit={modal.unit} month={month} closed={data.billing.closed} onClose={()=>setModal(null)}/>} {modal?.type==='tariff'&&<Configuration tariff={data.billing.tariff} busy={busy} onClose={()=>setModal(null)} onSubmit={v=>mutate(`/tariffs/${month}`,v,'Regras atualizadas e prévia recalculada.','PUT')}/>} {modal?.type==='credit'&&<CreditForm units={data.catalog.units} busy={busy} onClose={()=>setModal(null)} onSubmit={v=>mutate(`/billing/${month}/credits`,v,'Crédito registrado com rastreabilidade.')}/>} {modal?.type==='close'&&<Modal title="Fechar o rateio do mês" subtitle={monthName(month)} onClose={()=>setModal(null)}>{data.billing.pending_count>0?<div className="review-note"><CircleAlert/><p>Há {data.billing.pending_count} sessões em revisão. Registre uma decisão para cada uma antes de fechar o mês.</p></div>:<><p>O total de <strong>{money(data.billing.total_cents)}</strong> será preservado em faturas por unidade. Sessões, regras e créditos deste mês não poderão mais ser alterados no protótipo.</p><div className="modal-actions"><button className="secondary" onClick={()=>setModal(null)}>Voltar</button><button className="primary" disabled={busy} onClick={()=>mutate(`/billing/${month}/close`,{},'Mês fechado. Faturas preservadas.')}>Confirmar fechamento</button></div></>}</Modal>}</div>;
+  const [auth, setAuth] = useState(() => {
+    try {
+      return JSON.parse(sessionStorage.getItem("chargeops-auth"));
+    } catch {
+      return null;
+    }
+  });
+  const [page, setPage] = useState("overview"),
+    [month, setMonth] = useState("2026-09"),
+    [revision, setRevision] = useState(0);
+  const [data, setData] = useState(null),
+    [error, setError] = useState(""),
+    [toast, setToast] = useState(""),
+    [loading, setLoading] = useState(false),
+    [busy, setBusy] = useState(false),
+    [modal, setModal] = useState(null);
+  const manager = auth?.user.role === "manager";
+  function login(value) {
+    setAuth(value);
+    sessionStorage.setItem("chargeops-auth", JSON.stringify(value));
+    setPage(value.user.role === "manager" ? "overview" : "billing");
+  }
+  function logout() {
+    request("/auth/logout", auth?.token, { method: "POST" }).catch(() => {});
+    setAuth(null);
+    setData(null);
+    sessionStorage.removeItem("chargeops-auth");
+  }
+  useEffect(() => {
+    if (!toast) return;
+    const id = setTimeout(() => setToast(""), 5500);
+    return () => clearTimeout(id);
+  }, [toast]);
+  useEffect(() => {
+    if (!auth) return;
+    let cancelled = false;
+    setLoading(true);
+    setError("");
+    async function load() {
+      try {
+        const paths = [
+          "/catalog",
+          `/sessions?month=${month}`,
+          `/billing/${month}`,
+          ...(manager
+            ? [
+                `/analytics?month=${month}`,
+                `/forecast?month=${month}`,
+                "/model",
+                "/audit",
+              ]
+            : []),
+        ];
+        const responses = await Promise.all(
+          paths.map((p) => request(p, auth.token)),
+        );
+        if (!cancelled) {
+          const [
+            catalog,
+            sessions,
+            billing,
+            analytics,
+            forecast,
+            model,
+            audit,
+          ] = responses;
+          setData({
+            catalog,
+            sessions,
+            billing,
+            analytics,
+            forecast,
+            model,
+            audit,
+          });
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setError(e.message);
+          if (e.status === 401) {
+            setAuth(null);
+            sessionStorage.removeItem("chargeops-auth");
+          }
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [auth, month, revision, manager]);
+  async function mutate(path, body, message, method = "POST") {
+    setBusy(true);
+    setError("");
+    try {
+      const result = await request(path, auth.token, {
+        method,
+        body: JSON.stringify(body),
+      });
+      setModal(null);
+      setRevision((r) => r + 1);
+      setToast(message);
+      return result;
+    } catch (e) {
+      setError(e.message);
+      return null;
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function exportCsv() {
+    try {
+      const response = await fetch(`/api/billing/${month}/csv`, {
+        headers: { Authorization: `Bearer ${auth.token}` },
+      });
+      if (!response.ok) throw new Error("Não foi possível exportar o CSV.");
+      const url = URL.createObjectURL(await response.blob());
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `rateio-${month}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      setError(e.message);
+    }
+  }
+  if (!auth) return <Login onLogin={login} />;
+  const actualPage =
+    !manager && !["sessions", "billing"].includes(page) ? "billing" : page;
+  return (
+    <div className="app">
+      <aside className="sidebar">
+        <Logo />
+        <div className="workspace">
+          <div className="workspace-avatar">EC</div>
+          <div>
+            <strong>Condomínio exemplo</strong>
+            <small>Ambiente de demonstração</small>
+          </div>
+        </div>
+        <span className="nav-label">
+          {manager ? "GESTÃO DA OPERAÇÃO" : "MINHA UNIDADE"}
+        </span>
+        <nav>
+          {NAV.filter(
+            ([key]) => manager || ["sessions", "billing"].includes(key),
+          ).map(([key, label, Icon]) => (
+            <button
+              key={key}
+              className={actualPage === key ? "active" : ""}
+              onClick={() => setPage(key)}
+            >
+              <Icon size={19} />
+              {!manager && key === "billing" ? "Meu demonstrativo" : label}
+              {key === "sessions" && data?.analytics?.pending > 0 && (
+                <span className="nav-count">{data.analytics.pending}</span>
+              )}
+            </button>
+          ))}
+        </nav>
+        <div className="sidebar-bottom">
+          <div className="project-note">
+            <span className="dot mint" /> GOODWE + FIAP
+            <small>Enterprise Challenge · Sprint 02</small>
+          </div>
+          <div className="profile">
+            <div className="avatar">{manager ? "GE" : "AM"}</div>
+            <div>
+              <strong>
+                {manager ? "Gestor" : auth.user.name.replace(" (fictício)", "")}
+              </strong>
+              <small>
+                {manager
+                  ? "Visão administrativa"
+                  : `Apartamento ${auth.user.unit_id?.slice(2)}`}
+              </small>
+            </div>
+            <button aria-label="Sair" className="icon-button" onClick={logout}>
+              <LogOut size={18} />
+            </button>
+          </div>
+        </div>
+      </aside>
+      <main>
+        <header className="topbar">
+          <div>
+            <span className="breadcrumb">ChargeOps</span>
+            <ChevronRight size={14} />
+            <strong>{NAV.find((n) => n[0] === actualPage)?.[1]}</strong>
+          </div>
+          <span className="demo-tag">
+            <span className="dot green" />
+            Dados simulados
+          </span>
+          <button
+            className="icon-button mobile-logout"
+            aria-label="Sair da conta"
+            onClick={logout}
+          >
+            <LogOut size={18} />
+          </button>
+        </header>
+        <div className="content">
+          <div className="page-heading">
+            <div>
+              <span className="eyebrow">
+                {manager
+                  ? "CONTROLE, CLAREZA E CONFIANÇA"
+                  : "SEU CONSUMO, SEM SURPRESAS"}
+              </span>
+              <h1>{titles[actualPage]}</h1>
+              <p>
+                {manager
+                  ? "Acompanhe sua infraestrutura de recarga e o que merece atenção."
+                  : "Consulte apenas as sessões e os valores da sua unidade."}
+              </p>
+            </div>
+            <div className="heading-actions">
+              <select
+                className="month-select"
+                aria-label="Mês de referência"
+                value={month}
+                onChange={(e) => {
+                  setMonth(e.target.value);
+                  setModal(null);
+                }}
+              >
+                {(data?.catalog.months || ["2026-09"]).map((m) => (
+                  <option value={m} key={m}>
+                    {monthName(m)}
+                  </option>
+                ))}
+              </select>
+              {manager && (
+                <button
+                  className="primary"
+                  disabled={busy || loading || data?.billing.closed}
+                  onClick={() => setModal({ type: "simulate" })}
+                >
+                  <Plus size={18} />
+                  Simular recarga
+                </button>
+              )}
+            </div>
+          </div>
+          {error && (
+            <div className="error global-error" role="alert">
+              <CircleAlert size={18} />
+              {error}
+              <button onClick={() => setError("")} aria-label="Dispensar erro">
+                <X size={16} />
+              </button>
+            </div>
+          )}
+          {toast && (
+            <div className="toast" role="status">
+              <Check size={18} />
+              {toast}
+            </div>
+          )}
+          {loading ? (
+            <div className="loading">
+              <div className="spinner" />
+              Atualizando sessões, rateio e inteligência…
+            </div>
+          ) : data ? (
+            <>
+              {actualPage === "overview" && (
+                <Overview
+                  data={data}
+                  onNav={setPage}
+                  onDetail={(s) => setModal({ type: "session", session: s })}
+                />
+              )}{" "}
+              {actualPage === "sessions" && (
+                <Sessions
+                  data={data}
+                  onDetail={(s) => setModal({ type: "session", session: s })}
+                />
+              )}{" "}
+              {actualPage === "intelligence" && <Intelligence data={data} />}{" "}
+              {actualPage === "billing" && (
+                <Billing
+                  data={data}
+                  manager={manager}
+                  onInvoice={(u) => setModal({ type: "invoice", unit: u })}
+                  onConfigure={() => setModal({ type: "tariff" })}
+                  onCredit={() => setModal({ type: "credit" })}
+                  onCloseMonth={() => setModal({ type: "close" })}
+                  onExport={exportCsv}
+                />
+              )}{" "}
+              {actualPage === "audit" && (
+                <section className="panel">
+                  <div className="panel-head">
+                    <div>
+                      <h2>Trilha de auditoria</h2>
+                      <p>Últimos 100 eventos da operação · todos os meses</p>
+                    </div>
+                    <ShieldCheck />
+                  </div>
+                  <div className="table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Quando</th>
+                          <th>Evento</th>
+                          <th>Entidade / ator</th>
+                          <th>Registro</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data.audit.map((a) => (
+                          <tr key={a.id}>
+                            <td>{dateTime(a.created_at)}</td>
+                            <td>
+                              <code>{a.action}</code>
+                            </td>
+                            <td>
+                              {a.entity_id}
+                              <small>{a.actor}</small>
+                            </td>
+                            <td className="audit-detail">
+                              {JSON.stringify(a.detail)}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
+              )}
+            </>
+          ) : (
+            <Empty>
+              Não foi possível carregar a operação.{" "}
+              <button onClick={() => setRevision((r) => r + 1)}>
+                Tentar novamente
+              </button>
+            </Empty>
+          )}
+          <footer className="page-footer">
+            <span>EV ChargeOps · Grupo 22 · FIAP 2026</span>
+            <span>Dados sintéticos · Sem cobrança financeira real</span>
+          </footer>
+        </div>
+      </main>
+      {data && modal?.type === "simulate" && (
+        <Simulation
+          units={data.catalog.units}
+          busy={busy}
+          onClose={() => setModal(null)}
+          onSubmit={async (scenario, unit_id) => {
+            const result = await mutate(
+              "/simulate",
+              { scenario, unit_id, month },
+              "Sessão registrada e analisada.",
+            );
+            if (result) {
+              setPage("sessions");
+              setModal({ type: "session", session: result });
+            }
+          }}
+        />
+      )}{" "}
+      {modal?.type === "session" && (
+        <SessionDetail
+          session={modal.session}
+          manager={manager}
+          busy={busy}
+          onClose={() => setModal(null)}
+          onReview={(s, decision, reason) =>
+            mutate(
+              `/sessions/${s.id}/review`,
+              { decision, reason },
+              "Decisão registrada na auditoria.",
+            )
+          }
+        />
+      )}{" "}
+      {modal?.type === "invoice" && (
+        <Invoice
+          unit={modal.unit}
+          month={month}
+          closed={data.billing.closed}
+          onClose={() => setModal(null)}
+        />
+      )}{" "}
+      {modal?.type === "tariff" && (
+        <Configuration
+          tariff={data.billing.tariff}
+          busy={busy}
+          onClose={() => setModal(null)}
+          onSubmit={(v) =>
+            mutate(
+              `/tariffs/${month}`,
+              v,
+              "Regras atualizadas e prévia recalculada.",
+              "PUT",
+            )
+          }
+        />
+      )}{" "}
+      {modal?.type === "credit" && (
+        <CreditForm
+          units={data.catalog.units}
+          busy={busy}
+          onClose={() => setModal(null)}
+          onSubmit={(v) =>
+            mutate(
+              `/billing/${month}/credits`,
+              v,
+              "Crédito registrado com rastreabilidade.",
+            )
+          }
+        />
+      )}{" "}
+      {modal?.type === "close" && (
+        <Modal
+          title="Fechar o rateio do mês"
+          subtitle={monthName(month)}
+          onClose={() => setModal(null)}
+        >
+          {data.billing.pending_count > 0 ? (
+            <div className="review-note">
+              <CircleAlert />
+              <p>
+                Há {data.billing.pending_count} sessões em revisão. Registre uma
+                decisão para cada uma antes de fechar o mês.
+              </p>
+            </div>
+          ) : (
+            <>
+              <p>
+                O total de <strong>{money(data.billing.total_cents)}</strong>{" "}
+                será preservado em faturas por unidade. Sessões, regras e
+                créditos deste mês não poderão mais ser alterados no protótipo.
+              </p>
+              <div className="modal-actions">
+                <button className="secondary" onClick={() => setModal(null)}>
+                  Voltar
+                </button>
+                <button
+                  className="primary"
+                  disabled={busy}
+                  onClick={() =>
+                    mutate(
+                      `/billing/${month}/close`,
+                      {},
+                      "Mês fechado. Faturas preservadas.",
+                    )
+                  }
+                >
+                  Confirmar fechamento
+                </button>
+              </div>
+            </>
+          )}
+        </Modal>
+      )}
+    </div>
+  );
 }
 
-const container = document.getElementById('root');
-if (container) createRoot(container).render(<App/>);
+const container = document.getElementById("root");
+if (container) createRoot(container).render(<App />);
 export default App;

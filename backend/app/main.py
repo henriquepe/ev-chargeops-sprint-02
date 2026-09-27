@@ -2,7 +2,7 @@ import csv
 import io
 import json
 import os
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from typing import Annotated
 
@@ -44,7 +44,7 @@ from .schemas import (
     SimulationInput,
     TariffInput,
 )
-from .sessions import ingest, review, serialize
+from .sessions import TZ, ingest, review, serialize
 from .simulator import DEMO_AS_OF, scenario_payload
 
 app = FastAPI(
@@ -300,7 +300,7 @@ def analytics(user: Manager, db: DB, month: Month = "2026-09"):
     daily = {}
     for s in rows:
         if not s.quality_issues and s.eligibility == "eligible":
-            day = s.started_at[:10]
+            day = datetime.fromisoformat(s.started_at).astimezone(TZ).date().isoformat()
             daily[day] = daily.get(day, 0) + float(s.energy_kwh)
     return dict(
         sessions=len(rows),

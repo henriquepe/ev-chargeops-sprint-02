@@ -110,6 +110,7 @@ def review(db, sid, decision, reason, actor):
     if not s:
         raise HTTPException(404, "Sessão não encontrada.")
     lock_period(db, s.month)
+    db.refresh(s, with_for_update=True)
     if s.eligibility != "pending":
         raise HTTPException(409, "A sessão já foi revisada ou não está retida.")
     if decision == "approve" and s.quality_issues:
