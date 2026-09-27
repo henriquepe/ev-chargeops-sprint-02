@@ -1,0 +1,828 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EV ChargeOps — evidência executada</title><style>body{font:16px system-ui;max-width:960px;margin:50px auto;padding:24px;background:#f5f8f4;color:#173d36}h1{font-size:38px}small,p{color:#71866d}li{background:white;border:1px solid #dce6d6;border-radius:9px;padding:20px;margin:12px 0;list-style:none}ul{padding:0}pre{background:#183d34;color:#e2f0de;padding:25px;overflow:auto;border-radius:10px;font-size:12px}.summary{padding:25px;background:#c6ebd1;border-radius:10px}a{color:#067653}</style><small>GOODWE + FIAP · ENTERPRISE CHALLENGE 2026</small><h1>Do evento à fatura.<br>Fluxo executado e verificado.</h1><p>Execução HTTP real em 2026-09-27T15:27:06.304199+00:00. Banco: sqlite. Todos os dados são sintéticos.</p><div class="summary"><b>15 verificações aprovadas · fatura de teste R$ 29,26</b><p>Requisições reais ao servidor, com autenticação, persistência e inferência. Código: scripts/evidence.py.</p></div><ul><li><b>✓ Previsão avaliada com separação temporal</b><p>Verificado pela resposta real da API.</p></li><li><b>✓ Simulador registra seis cenários</b><p>Verificado pela resposta real da API.</p></li><li><b>✓ IA retém sessão longa</b><p>{&#x27;flagged&#x27;: True, &#x27;status&#x27;: &#x27;scored&#x27;, &#x27;score&#x27;: 23.92, &#x27;threshold&#x27;: 4.5, &#x27;version&#x27;: &#x27;6b0b4ccf7497&#x27;, &#x27;reasons&#x27;: [&#x27;duracao_min: 650.00; referência histórica 153.50; desvio robusto 23.9&#x27;, &#x27;potencia_media_kw: 1.11; referência histórica 6.08; desvio robusto 5.0&#x27;], &#x27;explanation&#x27;: &#x27;duracao_min: 650.00; referência histórica 153.50; desvio robusto 23.9; potencia_media_kw: 1.11; referência histórica 6.08; desvio robusto 5.0&#x27;}</p></li><li><b>✓ Identificação e medição retêm cobrança</b><p>Verificado pela resposta real da API.</p></li><li><b>✓ Fechamento impede pendências</b><p>Verificado pela resposta real da API.</p></li><li><b>✓ Inconsistências exigem exclusão</b><p>Verificado pela resposta real da API.</p></li><li><b>✓ Revisão humana libera anomalia</b><p>Verificado pela resposta real da API.</p></li><li><b>✓ Crédito idempotente</b><p>Verificado pela resposta real da API.</p></li><li><b>✓ Sessão idempotente</b><p>Verificado pela resposta real da API.</p></li><li><b>✓ Rateio exato em centavos</b><p>2926</p></li><li><b>✓ Mês fechado retorna snapshot idêntico</b><p>Verificado pela resposta real da API.</p></li><li><b>✓ Mês fechado rejeita novas sessões</b><p>Verificado pela resposta real da API.</p></li><li><b>✓ Morador vê somente sua unidade</b><p>Verificado pela resposta real da API.</p></li><li><b>✓ Morador não acessa auditoria administrativa</b><p>Verificado pela resposta real da API.</p></li><li><b>✓ Exportação do morador não contém vizinhos</b><p>Verificado pela resposta real da API.</p></li></ul><h2>Saída completa</h2><p>Tokens e senhas de sessão não são registrados neste relatório.</p><pre>{
+  &quot;executed_at&quot;: &quot;2026-09-27T15:27:06.304199+00:00&quot;,
+  &quot;base_url&quot;: &quot;http://127.0.0.1:8765&quot;,
+  &quot;month&quot;: &quot;2026-10&quot;,
+  &quot;source&quot;: &quot;synthetic_demo&quot;,
+  &quot;checks&quot;: [
+    {
+      &quot;name&quot;: &quot;Previsão avaliada com separação temporal&quot;,
+      &quot;passed&quot;: true,
+      &quot;detail&quot;: null
+    },
+    {
+      &quot;name&quot;: &quot;Simulador registra seis cenários&quot;,
+      &quot;passed&quot;: true,
+      &quot;detail&quot;: null
+    },
+    {
+      &quot;name&quot;: &quot;IA retém sessão longa&quot;,
+      &quot;passed&quot;: true,
+      &quot;detail&quot;: {
+        &quot;flagged&quot;: true,
+        &quot;status&quot;: &quot;scored&quot;,
+        &quot;score&quot;: 23.92,
+        &quot;threshold&quot;: 4.5,
+        &quot;version&quot;: &quot;6b0b4ccf7497&quot;,
+        &quot;reasons&quot;: [
+          &quot;duracao_min: 650.00; referência histórica 153.50; desvio robusto 23.9&quot;,
+          &quot;potencia_media_kw: 1.11; referência histórica 6.08; desvio robusto 5.0&quot;
+        ],
+        &quot;explanation&quot;: &quot;duracao_min: 650.00; referência histórica 153.50; desvio robusto 23.9; potencia_media_kw: 1.11; referência histórica 6.08; desvio robusto 5.0&quot;
+      }
+    },
+    {
+      &quot;name&quot;: &quot;Identificação e medição retêm cobrança&quot;,
+      &quot;passed&quot;: true,
+      &quot;detail&quot;: null
+    },
+    {
+      &quot;name&quot;: &quot;Fechamento impede pendências&quot;,
+      &quot;passed&quot;: true,
+      &quot;detail&quot;: null
+    },
+    {
+      &quot;name&quot;: &quot;Inconsistências exigem exclusão&quot;,
+      &quot;passed&quot;: true,
+      &quot;detail&quot;: null
+    },
+    {
+      &quot;name&quot;: &quot;Revisão humana libera anomalia&quot;,
+      &quot;passed&quot;: true,
+      &quot;detail&quot;: null
+    },
+    {
+      &quot;name&quot;: &quot;Crédito idempotente&quot;,
+      &quot;passed&quot;: true,
+      &quot;detail&quot;: null
+    },
+    {
+      &quot;name&quot;: &quot;Sessão idempotente&quot;,
+      &quot;passed&quot;: true,
+      &quot;detail&quot;: null
+    },
+    {
+      &quot;name&quot;: &quot;Rateio exato em centavos&quot;,
+      &quot;passed&quot;: true,
+      &quot;detail&quot;: 2926
+    },
+    {
+      &quot;name&quot;: &quot;Mês fechado retorna snapshot idêntico&quot;,
+      &quot;passed&quot;: true,
+      &quot;detail&quot;: null
+    },
+    {
+      &quot;name&quot;: &quot;Mês fechado rejeita novas sessões&quot;,
+      &quot;passed&quot;: true,
+      &quot;detail&quot;: null
+    },
+    {
+      &quot;name&quot;: &quot;Morador vê somente sua unidade&quot;,
+      &quot;passed&quot;: true,
+      &quot;detail&quot;: null
+    },
+    {
+      &quot;name&quot;: &quot;Morador não acessa auditoria administrativa&quot;,
+      &quot;passed&quot;: true,
+      &quot;detail&quot;: null
+    },
+    {
+      &quot;name&quot;: &quot;Exportação do morador não contém vizinhos&quot;,
+      &quot;passed&quot;: true,
+      &quot;detail&quot;: null
+    }
+  ],
+  &quot;health&quot;: {
+    &quot;status&quot;: &quot;ok&quot;,
+    &quot;database&quot;: &quot;sqlite&quot;,
+    &quot;source&quot;: &quot;synthetic_demo&quot;
+  },
+  &quot;initial_analytics&quot;: {
+    &quot;sessions&quot;: 109,
+    &quot;energy_kwh&quot;: 1647.51,
+    &quot;pending&quot;: 2,
+    &quot;excluded&quot;: 0,
+    &quot;anomalies&quot;: 2,
+    &quot;total_cents&quot;: 176451,
+    &quot;active_units&quot;: 4,
+    &quot;daily&quot;: [
+      {
+        &quot;date&quot;: &quot;2026-09-01&quot;,
+        &quot;kwh&quot;: 61.96
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-02&quot;,
+        &quot;kwh&quot;: 62.67
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-03&quot;,
+        &quot;kwh&quot;: 65.13
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-04&quot;,
+        &quot;kwh&quot;: 64.16
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-05&quot;,
+        &quot;kwh&quot;: 46.66
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-06&quot;,
+        &quot;kwh&quot;: 49.23
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-07&quot;,
+        &quot;kwh&quot;: 64.36
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-08&quot;,
+        &quot;kwh&quot;: 67.0
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-09&quot;,
+        &quot;kwh&quot;: 64.63
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-10&quot;,
+        &quot;kwh&quot;: 64.09
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-11&quot;,
+        &quot;kwh&quot;: 64.97
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-12&quot;,
+        &quot;kwh&quot;: 50.58
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-13&quot;,
+        &quot;kwh&quot;: 51.75
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-14&quot;,
+        &quot;kwh&quot;: 67.09
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-15&quot;,
+        &quot;kwh&quot;: 66.38
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-16&quot;,
+        &quot;kwh&quot;: 67.69
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-17&quot;,
+        &quot;kwh&quot;: 68.45
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-18&quot;,
+        &quot;kwh&quot;: 65.91
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-19&quot;,
+        &quot;kwh&quot;: 49.62
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-20&quot;,
+        &quot;kwh&quot;: 51.14
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-21&quot;,
+        &quot;kwh&quot;: 68.96
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-22&quot;,
+        &quot;kwh&quot;: 69.52
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-23&quot;,
+        &quot;kwh&quot;: 70.71
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-24&quot;,
+        &quot;kwh&quot;: 66.57
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-25&quot;,
+        &quot;kwh&quot;: 65.86
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-26&quot;,
+        &quot;kwh&quot;: 92.41
+      }
+    ],
+    &quot;units&quot;: [
+      {
+        &quot;unit_id&quot;: &quot;ap101&quot;,
+        &quot;label&quot;: &quot;Apartamento 101&quot;,
+        &quot;kwh&quot;: 440.451,
+        &quot;total_cents&quot;: 46242
+      },
+      {
+        &quot;unit_id&quot;: &quot;ap102&quot;,
+        &quot;label&quot;: &quot;Apartamento 102&quot;,
+        &quot;kwh&quot;: 394.528,
+        &quot;total_cents&quot;: 42752
+      },
+      {
+        &quot;unit_id&quot;: &quot;ap201&quot;,
+        &quot;label&quot;: &quot;Apartamento 201&quot;,
+        &quot;kwh&quot;: 404.511,
+        &quot;total_cents&quot;: 43590
+      },
+      {
+        &quot;unit_id&quot;: &quot;ap202&quot;,
+        &quot;label&quot;: &quot;Apartamento 202&quot;,
+        &quot;kwh&quot;: 408.019,
+        &quot;total_cents&quot;: 43867
+      },
+      {
+        &quot;unit_id&quot;: &quot;ap301&quot;,
+        &quot;label&quot;: &quot;Apartamento 301&quot;,
+        &quot;kwh&quot;: 0,
+        &quot;total_cents&quot;: 0
+      }
+    ]
+  },
+  &quot;forecast&quot;: {
+    &quot;status&quot;: &quot;ready&quot;,
+    &quot;as_of&quot;: &quot;2026-09-27&quot;,
+    &quot;selected_model&quot;: &quot;ridge&quot;,
+    &quot;observed_kwh&quot;: 1635.51,
+    &quot;remaining_kwh&quot;: 261.02,
+    &quot;projected_kwh&quot;: 1896.53,
+    &quot;ridge_mae_kwh&quot;: 3.75,
+    &quot;baseline_mae_kwh&quot;: 8.78,
+    &quot;training_days&quot;: 74,
+    &quot;validation_days&quot;: 14,
+    &quot;training_end&quot;: &quot;2026-09-12&quot;,
+    &quot;validation_start&quot;: &quot;2026-09-13&quot;,
+    &quot;validation_end&quot;: &quot;2026-09-26&quot;,
+    &quot;forecast_days&quot;: 4,
+    &quot;data_source&quot;: &quot;synthetic_demo&quot;,
+    &quot;history&quot;: [
+      {
+        &quot;date&quot;: &quot;2026-09-01&quot;,
+        &quot;kwh&quot;: 61.97
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-02&quot;,
+        &quot;kwh&quot;: 62.67
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-03&quot;,
+        &quot;kwh&quot;: 65.13
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-04&quot;,
+        &quot;kwh&quot;: 64.16
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-05&quot;,
+        &quot;kwh&quot;: 46.66
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-06&quot;,
+        &quot;kwh&quot;: 49.23
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-07&quot;,
+        &quot;kwh&quot;: 64.36
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-08&quot;,
+        &quot;kwh&quot;: 67.0
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-09&quot;,
+        &quot;kwh&quot;: 64.63
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-10&quot;,
+        &quot;kwh&quot;: 64.09
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-11&quot;,
+        &quot;kwh&quot;: 64.97
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-12&quot;,
+        &quot;kwh&quot;: 50.58
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-13&quot;,
+        &quot;kwh&quot;: 51.75
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-14&quot;,
+        &quot;kwh&quot;: 67.09
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-15&quot;,
+        &quot;kwh&quot;: 66.38
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-16&quot;,
+        &quot;kwh&quot;: 67.69
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-17&quot;,
+        &quot;kwh&quot;: 68.45
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-18&quot;,
+        &quot;kwh&quot;: 65.91
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-19&quot;,
+        &quot;kwh&quot;: 49.62
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-20&quot;,
+        &quot;kwh&quot;: 51.14
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-21&quot;,
+        &quot;kwh&quot;: 68.96
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-22&quot;,
+        &quot;kwh&quot;: 69.52
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-23&quot;,
+        &quot;kwh&quot;: 70.71
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-24&quot;,
+        &quot;kwh&quot;: 66.57
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-25&quot;,
+        &quot;kwh&quot;: 65.86
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-26&quot;,
+        &quot;kwh&quot;: 80.41
+      }
+    ],
+    &quot;future&quot;: [
+      {
+        &quot;date&quot;: &quot;2026-09-27&quot;,
+        &quot;kwh&quot;: 53.76
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-28&quot;,
+        &quot;kwh&quot;: 68.41
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-29&quot;,
+        &quot;kwh&quot;: 69.26
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-30&quot;,
+        &quot;kwh&quot;: 69.59
+      }
+    ],
+    &quot;validation&quot;: [
+      {
+        &quot;date&quot;: &quot;2026-09-13&quot;,
+        &quot;actual&quot;: 51.75,
+        &quot;predicted&quot;: 50.41,
+        &quot;baseline&quot;: 44.67
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-14&quot;,
+        &quot;actual&quot;: 67.09,
+        &quot;predicted&quot;: 64.71,
+        &quot;baseline&quot;: 60.38
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-15&quot;,
+        &quot;actual&quot;: 66.38,
+        &quot;predicted&quot;: 65.73,
+        &quot;baseline&quot;: 61.49
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-16&quot;,
+        &quot;actual&quot;: 67.69,
+        &quot;predicted&quot;: 65.8,
+        &quot;baseline&quot;: 61.09
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-17&quot;,
+        &quot;actual&quot;: 68.45,
+        &quot;predicted&quot;: 64.61,
+        &quot;baseline&quot;: 59.78
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-18&quot;,
+        &quot;actual&quot;: 65.91,
+        &quot;predicted&quot;: 65.9,
+        &quot;baseline&quot;: 61.18
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-19&quot;,
+        &quot;actual&quot;: 49.62,
+        &quot;predicted&quot;: 51.04,
+        &quot;baseline&quot;: 44.96
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-20&quot;,
+        &quot;actual&quot;: 51.14,
+        &quot;predicted&quot;: 51.27,
+        &quot;baseline&quot;: 44.67
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-21&quot;,
+        &quot;actual&quot;: 68.96,
+        &quot;predicted&quot;: 65.56,
+        &quot;baseline&quot;: 60.38
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-22&quot;,
+        &quot;actual&quot;: 69.52,
+        &quot;predicted&quot;: 66.58,
+        &quot;baseline&quot;: 61.49
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-23&quot;,
+        &quot;actual&quot;: 70.71,
+        &quot;predicted&quot;: 66.66,
+        &quot;baseline&quot;: 61.09
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-24&quot;,
+        &quot;actual&quot;: 66.57,
+        &quot;predicted&quot;: 65.46,
+        &quot;baseline&quot;: 59.78
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-25&quot;,
+        &quot;actual&quot;: 65.86,
+        &quot;predicted&quot;: 66.76,
+        &quot;baseline&quot;: 61.18
+      },
+      {
+        &quot;date&quot;: &quot;2026-09-26&quot;,
+        &quot;actual&quot;: 80.41,
+        &quot;predicted&quot;: 51.9,
+        &quot;baseline&quot;: 44.96
+      }
+    ],
+    &quot;explanation&quot;: &quot;Projeção de energia validada, não de potência instantânea. Retenções e exclusões não entram na previsão. Comparação temporal de 14 dias; métricas sobre dados sintéticos não comprovam desempenho real.&quot;
+  },
+  &quot;model&quot;: {
+    &quot;method&quot;: &quot;robust-zscore&quot;,
+    &quot;threshold&quot;: 4.5,
+    &quot;features&quot;: [
+      &quot;energia_kwh&quot;,
+      &quot;duracao_min&quot;,
+      &quot;potencia_media_kw&quot;,
+      &quot;ociosidade_min&quot;
+    ],
+    &quot;median&quot;: [
+      14.5585,
+      153.5,
+      6.076,
+      14.0
+    ],
+    &quot;scale&quot;: [
+      2.0,
+      20.7564,
+      1.0,
+      10.0
+    ],
+    &quot;training_rows&quot;: 248,
+    &quot;trained_before&quot;: &quot;2026-09-01&quot;,
+    &quot;training_data_hash&quot;: &quot;e51381f06bacad41e8721042d9f5f1a96a10261b48046ee71e4b2e348bb976e3&quot;,
+    &quot;version&quot;: &quot;6b0b4ccf7497&quot;
+  },
+  &quot;billing&quot;: {
+    &quot;month&quot;: &quot;2026-10&quot;,
+    &quot;closed&quot;: true,
+    &quot;closed_at&quot;: &quot;2026-09-27T15:27:06.412073+00:00&quot;,
+    &quot;tariff&quot;: {
+      &quot;tariff_kwh&quot;: &quot;0.950000&quot;,
+      &quot;session_fee&quot;: &quot;1.50&quot;,
+      &quot;idle_fee&quot;: &quot;0.1000&quot;,
+      &quot;idle_grace_minutes&quot;: &quot;15&quot;,
+      &quot;loss_percent&quot;: &quot;2.0000&quot;,
+      &quot;fixed_fee&quot;: &quot;0.00&quot;
+    },
+    &quot;units&quot;: [
+      {
+        &quot;unit_id&quot;: &quot;ap101&quot;,
+        &quot;label&quot;: &quot;Apartamento 101&quot;,
+        &quot;items&quot;: [
+          {
+            &quot;session_id&quot;: &quot;sim-538099fd334a&quot;,
+            &quot;started_at&quot;: &quot;2026-10-26T19:00:00-03:00&quot;,
+            &quot;status&quot;: &quot;completed&quot;,
+            &quot;energy_kwh&quot;: 14.2,
+            &quot;cost_center&quot;: &quot;resident&quot;,
+            &quot;energy_cents&quot;: 1349,
+            &quot;operation_cents&quot;: 150,
+            &quot;idle_cents&quot;: 0,
+            &quot;loss_cents&quot;: 27,
+            &quot;total_cents&quot;: 1526
+          },
+          {
+            &quot;session_id&quot;: &quot;sim-2bd361481cab&quot;,
+            &quot;started_at&quot;: &quot;2026-10-26T19:00:00-03:00&quot;,
+            &quot;status&quot;: &quot;interrupted&quot;,
+            &quot;energy_kwh&quot;: 4.5,
+            &quot;cost_center&quot;: &quot;resident&quot;,
+            &quot;energy_cents&quot;: 428,
+            &quot;operation_cents&quot;: 150,
+            &quot;idle_cents&quot;: 0,
+            &quot;loss_cents&quot;: 9,
+            &quot;total_cents&quot;: 587
+          },
+          {
+            &quot;session_id&quot;: &quot;sim-86ded6e04974&quot;,
+            &quot;started_at&quot;: &quot;2026-10-26T19:00:00-03:00&quot;,
+            &quot;status&quot;: &quot;completed&quot;,
+            &quot;energy_kwh&quot;: 14.2,
+            &quot;cost_center&quot;: &quot;promotion&quot;,
+            &quot;energy_cents&quot;: 0,
+            &quot;operation_cents&quot;: 0,
+            &quot;idle_cents&quot;: 0,
+            &quot;loss_cents&quot;: 0,
+            &quot;total_cents&quot;: 0
+          },
+          {
+            &quot;session_id&quot;: &quot;sim-31a0a8a131aa&quot;,
+            &quot;started_at&quot;: &quot;2026-10-26T19:00:00-03:00&quot;,
+            &quot;status&quot;: &quot;completed&quot;,
+            &quot;energy_kwh&quot;: 12.0,
+            &quot;cost_center&quot;: &quot;resident&quot;,
+            &quot;energy_cents&quot;: 1140,
+            &quot;operation_cents&quot;: 150,
+            &quot;idle_cents&quot;: 0,
+            &quot;loss_cents&quot;: 23,
+            &quot;total_cents&quot;: 1313
+          }
+        ],
+        &quot;energy_kwh&quot;: 44.9,
+        &quot;fixed_cents&quot;: 0,
+        &quot;credits&quot;: [
+          {
+            &quot;id&quot;: &quot;evidence-credit-2026-10&quot;,
+            &quot;amount_cents&quot;: 500,
+            &quot;reason&quot;: &quot;Crédito didático da validação ponta a ponta&quot;
+          }
+        ],
+        &quot;credit_cents&quot;: 500,
+        &quot;total_cents&quot;: 2926,
+        &quot;pending_count&quot;: 0
+      },
+      {
+        &quot;unit_id&quot;: &quot;ap102&quot;,
+        &quot;label&quot;: &quot;Apartamento 102&quot;,
+        &quot;items&quot;: [],
+        &quot;energy_kwh&quot;: 0,
+        &quot;fixed_cents&quot;: 0,
+        &quot;credits&quot;: [],
+        &quot;credit_cents&quot;: 0,
+        &quot;total_cents&quot;: 0,
+        &quot;pending_count&quot;: 0
+      },
+      {
+        &quot;unit_id&quot;: &quot;ap201&quot;,
+        &quot;label&quot;: &quot;Apartamento 201&quot;,
+        &quot;items&quot;: [],
+        &quot;energy_kwh&quot;: 0,
+        &quot;fixed_cents&quot;: 0,
+        &quot;credits&quot;: [],
+        &quot;credit_cents&quot;: 0,
+        &quot;total_cents&quot;: 0,
+        &quot;pending_count&quot;: 0
+      },
+      {
+        &quot;unit_id&quot;: &quot;ap202&quot;,
+        &quot;label&quot;: &quot;Apartamento 202&quot;,
+        &quot;items&quot;: [],
+        &quot;energy_kwh&quot;: 0,
+        &quot;fixed_cents&quot;: 0,
+        &quot;credits&quot;: [],
+        &quot;credit_cents&quot;: 0,
+        &quot;total_cents&quot;: 0,
+        &quot;pending_count&quot;: 0
+      },
+      {
+        &quot;unit_id&quot;: &quot;ap301&quot;,
+        &quot;label&quot;: &quot;Apartamento 301&quot;,
+        &quot;items&quot;: [],
+        &quot;energy_kwh&quot;: 0,
+        &quot;fixed_cents&quot;: 0,
+        &quot;credits&quot;: [],
+        &quot;credit_cents&quot;: 0,
+        &quot;total_cents&quot;: 0,
+        &quot;pending_count&quot;: 0
+      }
+    ],
+    &quot;pending_count&quot;: 0,
+    &quot;total_cents&quot;: 2926
+  },
+  &quot;sessions&quot;: [
+    {
+      &quot;id&quot;: &quot;sim-2bd361481cab&quot;,
+      &quot;charger_id&quot;: &quot;hca-g2-01&quot;,
+      &quot;user_id&quot;: &quot;resident-101&quot;,
+      &quot;unit_id&quot;: &quot;ap101&quot;,
+      &quot;vehicle_id&quot;: &quot;veh-101&quot;,
+      &quot;month&quot;: &quot;2026-10&quot;,
+      &quot;started_at&quot;: &quot;2026-10-26T19:00:00-03:00&quot;,
+      &quot;ended_at&quot;: &quot;2026-10-26T19:48:00-03:00&quot;,
+      &quot;energy_kwh&quot;: 4.5,
+      &quot;duration_minutes&quot;: 48.0,
+      &quot;average_power_kw&quot;: 5.625,
+      &quot;idle_minutes&quot;: 0,
+      &quot;status&quot;: &quot;interrupted&quot;,
+      &quot;stop_reason&quot;: &quot;power_interruption&quot;,
+      &quot;cost_center&quot;: &quot;resident&quot;,
+      &quot;eligibility&quot;: &quot;eligible&quot;,
+      &quot;quality_issues&quot;: [],
+      &quot;anomaly&quot;: {
+        &quot;flagged&quot;: false,
+        &quot;status&quot;: &quot;scored&quot;,
+        &quot;score&quot;: 1.4,
+        &quot;threshold&quot;: 4.5,
+        &quot;version&quot;: &quot;6b0b4ccf7497&quot;,
+        &quot;reasons&quot;: [],
+        &quot;explanation&quot;: &quot;Sessão compatível com o histórico de referência.&quot;
+      },
+      &quot;review_reason&quot;: null,
+      &quot;reviewed_by&quot;: null,
+      &quot;source&quot;: &quot;simulator&quot;
+    },
+    {
+      &quot;id&quot;: &quot;sim-31a0a8a131aa&quot;,
+      &quot;charger_id&quot;: &quot;hca-g2-01&quot;,
+      &quot;user_id&quot;: &quot;resident-101&quot;,
+      &quot;unit_id&quot;: &quot;ap101&quot;,
+      &quot;vehicle_id&quot;: &quot;veh-101&quot;,
+      &quot;month&quot;: &quot;2026-10&quot;,
+      &quot;started_at&quot;: &quot;2026-10-26T19:00:00-03:00&quot;,
+      &quot;ended_at&quot;: &quot;2026-10-27T05:50:00-03:00&quot;,
+      &quot;energy_kwh&quot;: 12.0,
+      &quot;duration_minutes&quot;: 650.0,
+      &quot;average_power_kw&quot;: 1.108,
+      &quot;idle_minutes&quot;: 0,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;stop_reason&quot;: &quot;vehicle_disconnected&quot;,
+      &quot;cost_center&quot;: &quot;resident&quot;,
+      &quot;eligibility&quot;: &quot;eligible&quot;,
+      &quot;quality_issues&quot;: [],
+      &quot;anomaly&quot;: {
+        &quot;flagged&quot;: true,
+        &quot;status&quot;: &quot;scored&quot;,
+        &quot;score&quot;: 23.92,
+        &quot;threshold&quot;: 4.5,
+        &quot;version&quot;: &quot;6b0b4ccf7497&quot;,
+        &quot;reasons&quot;: [
+          &quot;duracao_min: 650.00; referência histórica 153.50; desvio robusto 23.9&quot;,
+          &quot;potencia_media_kw: 1.11; referência histórica 6.08; desvio robusto 5.0&quot;
+        ],
+        &quot;explanation&quot;: &quot;duracao_min: 650.00; referência histórica 153.50; desvio robusto 23.9; potencia_media_kw: 1.11; referência histórica 6.08; desvio robusto 5.0&quot;
+      },
+      &quot;review_reason&quot;: &quot;Conferência de duração longa em demonstração&quot;,
+      &quot;reviewed_by&quot;: &quot;manager&quot;,
+      &quot;source&quot;: &quot;simulator&quot;
+    },
+    {
+      &quot;id&quot;: &quot;sim-538099fd334a&quot;,
+      &quot;charger_id&quot;: &quot;hca-g2-01&quot;,
+      &quot;user_id&quot;: &quot;resident-101&quot;,
+      &quot;unit_id&quot;: &quot;ap101&quot;,
+      &quot;vehicle_id&quot;: &quot;veh-101&quot;,
+      &quot;month&quot;: &quot;2026-10&quot;,
+      &quot;started_at&quot;: &quot;2026-10-26T19:00:00-03:00&quot;,
+      &quot;ended_at&quot;: &quot;2026-10-26T21:30:00-03:00&quot;,
+      &quot;energy_kwh&quot;: 14.2,
+      &quot;duration_minutes&quot;: 150.0,
+      &quot;average_power_kw&quot;: 6.086,
+      &quot;idle_minutes&quot;: 10,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;stop_reason&quot;: &quot;vehicle_disconnected&quot;,
+      &quot;cost_center&quot;: &quot;resident&quot;,
+      &quot;eligibility&quot;: &quot;eligible&quot;,
+      &quot;quality_issues&quot;: [],
+      &quot;anomaly&quot;: {
+        &quot;flagged&quot;: false,
+        &quot;status&quot;: &quot;scored&quot;,
+        &quot;score&quot;: 0.4,
+        &quot;threshold&quot;: 4.5,
+        &quot;version&quot;: &quot;6b0b4ccf7497&quot;,
+        &quot;reasons&quot;: [],
+        &quot;explanation&quot;: &quot;Sessão compatível com o histórico de referência.&quot;
+      },
+      &quot;review_reason&quot;: null,
+      &quot;reviewed_by&quot;: null,
+      &quot;source&quot;: &quot;simulator&quot;
+    },
+    {
+      &quot;id&quot;: &quot;sim-86ded6e04974&quot;,
+      &quot;charger_id&quot;: &quot;hca-g2-01&quot;,
+      &quot;user_id&quot;: &quot;resident-101&quot;,
+      &quot;unit_id&quot;: &quot;ap101&quot;,
+      &quot;vehicle_id&quot;: &quot;veh-101&quot;,
+      &quot;month&quot;: &quot;2026-10&quot;,
+      &quot;started_at&quot;: &quot;2026-10-26T19:00:00-03:00&quot;,
+      &quot;ended_at&quot;: &quot;2026-10-26T21:30:00-03:00&quot;,
+      &quot;energy_kwh&quot;: 14.2,
+      &quot;duration_minutes&quot;: 150.0,
+      &quot;average_power_kw&quot;: 6.086,
+      &quot;idle_minutes&quot;: 10,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;stop_reason&quot;: &quot;vehicle_disconnected&quot;,
+      &quot;cost_center&quot;: &quot;promotion&quot;,
+      &quot;eligibility&quot;: &quot;eligible&quot;,
+      &quot;quality_issues&quot;: [],
+      &quot;anomaly&quot;: {
+        &quot;flagged&quot;: false,
+        &quot;status&quot;: &quot;scored&quot;,
+        &quot;score&quot;: 0.4,
+        &quot;threshold&quot;: 4.5,
+        &quot;version&quot;: &quot;6b0b4ccf7497&quot;,
+        &quot;reasons&quot;: [],
+        &quot;explanation&quot;: &quot;Sessão compatível com o histórico de referência.&quot;
+      },
+      &quot;review_reason&quot;: null,
+      &quot;reviewed_by&quot;: null,
+      &quot;source&quot;: &quot;simulator&quot;
+    },
+    {
+      &quot;id&quot;: &quot;sim-a2559eae9f64&quot;,
+      &quot;charger_id&quot;: &quot;hca-g2-01&quot;,
+      &quot;user_id&quot;: &quot;resident-101&quot;,
+      &quot;unit_id&quot;: &quot;ap101&quot;,
+      &quot;vehicle_id&quot;: &quot;veh-101&quot;,
+      &quot;month&quot;: &quot;2026-10&quot;,
+      &quot;started_at&quot;: &quot;2026-10-26T19:00:00-03:00&quot;,
+      &quot;ended_at&quot;: &quot;2026-10-26T21:30:00-03:00&quot;,
+      &quot;energy_kwh&quot;: 0.0,
+      &quot;duration_minutes&quot;: 150.0,
+      &quot;average_power_kw&quot;: 0.0,
+      &quot;idle_minutes&quot;: 10,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;stop_reason&quot;: &quot;vehicle_disconnected&quot;,
+      &quot;cost_center&quot;: &quot;resident&quot;,
+      &quot;eligibility&quot;: &quot;excluded&quot;,
+      &quot;quality_issues&quot;: [
+        &quot;Medidor final inferior ao inicial.&quot;,
+        &quot;Energia declarada diverge da diferença entre medidores.&quot;
+      ],
+      &quot;anomaly&quot;: {
+        &quot;flagged&quot;: true,
+        &quot;status&quot;: &quot;scored&quot;,
+        &quot;score&quot;: 7.28,
+        &quot;threshold&quot;: 4.5,
+        &quot;version&quot;: &quot;6b0b4ccf7497&quot;,
+        &quot;reasons&quot;: [
+          &quot;energia_kwh: 0.00; referência histórica 14.56; desvio robusto 7.3&quot;,
+          &quot;potencia_media_kw: 0.00; referência histórica 6.08; desvio robusto 6.1&quot;
+        ],
+        &quot;explanation&quot;: &quot;energia_kwh: 0.00; referência histórica 14.56; desvio robusto 7.3; potencia_media_kw: 0.00; referência histórica 6.08; desvio robusto 6.1&quot;
+      },
+      &quot;review_reason&quot;: &quot;Inconsistência confirmada no cenário sintético&quot;,
+      &quot;reviewed_by&quot;: &quot;manager&quot;,
+      &quot;source&quot;: &quot;simulator&quot;
+    },
+    {
+      &quot;id&quot;: &quot;sim-b661c52d61e7&quot;,
+      &quot;charger_id&quot;: &quot;hca-g2-01&quot;,
+      &quot;user_id&quot;: null,
+      &quot;unit_id&quot;: null,
+      &quot;vehicle_id&quot;: null,
+      &quot;month&quot;: &quot;2026-10&quot;,
+      &quot;started_at&quot;: &quot;2026-10-26T19:00:00-03:00&quot;,
+      &quot;ended_at&quot;: &quot;2026-10-26T21:30:00-03:00&quot;,
+      &quot;energy_kwh&quot;: 14.2,
+      &quot;duration_minutes&quot;: 150.0,
+      &quot;average_power_kw&quot;: 6.086,
+      &quot;idle_minutes&quot;: 10,
+      &quot;status&quot;: &quot;completed&quot;,
+      &quot;stop_reason&quot;: &quot;vehicle_disconnected&quot;,
+      &quot;cost_center&quot;: &quot;resident&quot;,
+      &quot;eligibility&quot;: &quot;excluded&quot;,
+      &quot;quality_issues&quot;: [
+        &quot;Sessão sem identificação de usuário/unidade.&quot;
+      ],
+      &quot;anomaly&quot;: {
+        &quot;flagged&quot;: false,
+        &quot;status&quot;: &quot;scored&quot;,
+        &quot;score&quot;: 0.4,
+        &quot;threshold&quot;: 4.5,
+        &quot;version&quot;: &quot;6b0b4ccf7497&quot;,
+        &quot;reasons&quot;: [],
+        &quot;explanation&quot;: &quot;Sessão compatível com o histórico de referência.&quot;
+      },
+      &quot;review_reason&quot;: &quot;Inconsistência confirmada no cenário sintético&quot;,
+      &quot;reviewed_by&quot;: &quot;manager&quot;,
+      &quot;source&quot;: &quot;simulator&quot;
+    }
+  ],
+  &quot;csv&quot;: &quot;﻿Mes;Unidade;Energia_kWh;Sessoes;Quota_fixa_BRL;Creditos_BRL;Total_BRL;Estado\r\n2026-10;ap101;44,900;4;0,00;5,00;29,26;Fechado\r\n2026-10;ap102;0,000;0;0,00;0,00;0,00;Fechado\r\n2026-10;ap201;0,000;0;0,00;0,00;0,00;Fechado\r\n2026-10;ap202;0,000;0;0,00;0,00;0,00;Fechado\r\n2026-10;ap301;0,000;0;0,00;0,00;0,00;Fechado\r\n&quot;,
+  &quot;result&quot;: &quot;PASSED&quot;
+}</pre></html>

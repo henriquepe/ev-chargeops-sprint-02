@@ -1,0 +1,831 @@
+{
+  "executed_at": "2026-09-27T15:17:18.014025+00:00",
+  "base_url": "http://127.0.0.1:8000",
+  "month": "2026-10",
+  "source": "synthetic_demo",
+  "checks": [
+    {
+      "name": "Previsão avaliada com separação temporal",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Simulador registra seis cenários",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "IA retém sessão longa",
+      "passed": true,
+      "detail": {
+        "flagged": true,
+        "status": "scored",
+        "score": 23.92,
+        "threshold": 4.5,
+        "version": "3f296ff12864",
+        "reasons": [
+          "duracao_min: 650.00; referência histórica 153.50; desvio robusto 23.9",
+          "potencia_media_kw: 1.11; referência histórica 6.08; desvio robusto 5.0"
+        ],
+        "explanation": "duracao_min: 650.00; referência histórica 153.50; desvio robusto 23.9; potencia_media_kw: 1.11; referência histórica 6.08; desvio robusto 5.0"
+      }
+    },
+    {
+      "name": "Identificação e medição retêm cobrança",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Fechamento impede pendências",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Inconsistências exigem exclusão",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Revisões concorrentes não sobrescrevem decisões",
+      "passed": true,
+      "detail": [
+        200,
+        409
+      ]
+    },
+    {
+      "name": "Crédito idempotente",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Sessão idempotente",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Rateio exato em centavos",
+      "passed": true,
+      "detail": 2926
+    },
+    {
+      "name": "Mês fechado retorna snapshot idêntico",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Mês fechado rejeita novas sessões",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Morador vê somente sua unidade",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Morador não acessa auditoria administrativa",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "Exportação do morador não contém vizinhos",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "health": {
+    "status": "ok",
+    "database": "postgresql",
+    "source": "synthetic_demo"
+  },
+  "initial_analytics": {
+    "sessions": 108,
+    "energy_kwh": 1621.31,
+    "pending": 3,
+    "excluded": 0,
+    "anomalies": 2,
+    "total_cents": 173612,
+    "active_units": 4,
+    "daily": [
+      {
+        "date": "2026-09-01",
+        "kwh": 61.96
+      },
+      {
+        "date": "2026-09-02",
+        "kwh": 62.67
+      },
+      {
+        "date": "2026-09-03",
+        "kwh": 65.13
+      },
+      {
+        "date": "2026-09-04",
+        "kwh": 64.16
+      },
+      {
+        "date": "2026-09-05",
+        "kwh": 46.66
+      },
+      {
+        "date": "2026-09-06",
+        "kwh": 49.23
+      },
+      {
+        "date": "2026-09-07",
+        "kwh": 64.36
+      },
+      {
+        "date": "2026-09-08",
+        "kwh": 67.0
+      },
+      {
+        "date": "2026-09-09",
+        "kwh": 64.63
+      },
+      {
+        "date": "2026-09-10",
+        "kwh": 64.09
+      },
+      {
+        "date": "2026-09-11",
+        "kwh": 64.97
+      },
+      {
+        "date": "2026-09-12",
+        "kwh": 50.58
+      },
+      {
+        "date": "2026-09-13",
+        "kwh": 51.75
+      },
+      {
+        "date": "2026-09-14",
+        "kwh": 67.09
+      },
+      {
+        "date": "2026-09-15",
+        "kwh": 66.38
+      },
+      {
+        "date": "2026-09-16",
+        "kwh": 67.69
+      },
+      {
+        "date": "2026-09-17",
+        "kwh": 68.45
+      },
+      {
+        "date": "2026-09-18",
+        "kwh": 65.91
+      },
+      {
+        "date": "2026-09-19",
+        "kwh": 49.62
+      },
+      {
+        "date": "2026-09-20",
+        "kwh": 51.14
+      },
+      {
+        "date": "2026-09-21",
+        "kwh": 68.96
+      },
+      {
+        "date": "2026-09-22",
+        "kwh": 69.52
+      },
+      {
+        "date": "2026-09-23",
+        "kwh": 70.71
+      },
+      {
+        "date": "2026-09-24",
+        "kwh": 66.57
+      },
+      {
+        "date": "2026-09-25",
+        "kwh": 65.86
+      },
+      {
+        "date": "2026-09-26",
+        "kwh": 66.21
+      }
+    ],
+    "units": [
+      {
+        "unit_id": "ap101",
+        "label": "Apartamento 101",
+        "kwh": 414.251,
+        "total_cents": 43403
+      },
+      {
+        "unit_id": "ap102",
+        "label": "Apartamento 102",
+        "kwh": 394.528,
+        "total_cents": 42752
+      },
+      {
+        "unit_id": "ap201",
+        "label": "Apartamento 201",
+        "kwh": 404.511,
+        "total_cents": 43590
+      },
+      {
+        "unit_id": "ap202",
+        "label": "Apartamento 202",
+        "kwh": 408.019,
+        "total_cents": 43867
+      },
+      {
+        "unit_id": "ap301",
+        "label": "Apartamento 301",
+        "kwh": 0,
+        "total_cents": 0
+      }
+    ]
+  },
+  "forecast": {
+    "status": "ready",
+    "as_of": "2026-09-27",
+    "selected_model": "ridge",
+    "observed_kwh": 1621.31,
+    "remaining_kwh": 259.05,
+    "projected_kwh": 1880.36,
+    "ridge_mae_kwh": 2.74,
+    "baseline_mae_kwh": 7.77,
+    "training_days": 74,
+    "validation_days": 14,
+    "training_end": "2026-09-12",
+    "validation_start": "2026-09-13",
+    "validation_end": "2026-09-26",
+    "forecast_days": 4,
+    "data_source": "synthetic_demo",
+    "history": [
+      {
+        "date": "2026-09-01",
+        "kwh": 61.97
+      },
+      {
+        "date": "2026-09-02",
+        "kwh": 62.67
+      },
+      {
+        "date": "2026-09-03",
+        "kwh": 65.13
+      },
+      {
+        "date": "2026-09-04",
+        "kwh": 64.16
+      },
+      {
+        "date": "2026-09-05",
+        "kwh": 46.66
+      },
+      {
+        "date": "2026-09-06",
+        "kwh": 49.23
+      },
+      {
+        "date": "2026-09-07",
+        "kwh": 64.36
+      },
+      {
+        "date": "2026-09-08",
+        "kwh": 67.0
+      },
+      {
+        "date": "2026-09-09",
+        "kwh": 64.63
+      },
+      {
+        "date": "2026-09-10",
+        "kwh": 64.09
+      },
+      {
+        "date": "2026-09-11",
+        "kwh": 64.97
+      },
+      {
+        "date": "2026-09-12",
+        "kwh": 50.58
+      },
+      {
+        "date": "2026-09-13",
+        "kwh": 51.75
+      },
+      {
+        "date": "2026-09-14",
+        "kwh": 67.09
+      },
+      {
+        "date": "2026-09-15",
+        "kwh": 66.38
+      },
+      {
+        "date": "2026-09-16",
+        "kwh": 67.69
+      },
+      {
+        "date": "2026-09-17",
+        "kwh": 68.45
+      },
+      {
+        "date": "2026-09-18",
+        "kwh": 65.91
+      },
+      {
+        "date": "2026-09-19",
+        "kwh": 49.62
+      },
+      {
+        "date": "2026-09-20",
+        "kwh": 51.14
+      },
+      {
+        "date": "2026-09-21",
+        "kwh": 68.96
+      },
+      {
+        "date": "2026-09-22",
+        "kwh": 69.52
+      },
+      {
+        "date": "2026-09-23",
+        "kwh": 70.71
+      },
+      {
+        "date": "2026-09-24",
+        "kwh": 66.57
+      },
+      {
+        "date": "2026-09-25",
+        "kwh": 65.86
+      },
+      {
+        "date": "2026-09-26",
+        "kwh": 66.21
+      }
+    ],
+    "future": [
+      {
+        "date": "2026-09-27",
+        "kwh": 53.28
+      },
+      {
+        "date": "2026-09-28",
+        "kwh": 67.93
+      },
+      {
+        "date": "2026-09-29",
+        "kwh": 68.78
+      },
+      {
+        "date": "2026-09-30",
+        "kwh": 69.07
+      }
+    ],
+    "validation": [
+      {
+        "date": "2026-09-13",
+        "actual": 51.75,
+        "predicted": 50.41,
+        "baseline": 44.67
+      },
+      {
+        "date": "2026-09-14",
+        "actual": 67.09,
+        "predicted": 64.71,
+        "baseline": 60.38
+      },
+      {
+        "date": "2026-09-15",
+        "actual": 66.38,
+        "predicted": 65.73,
+        "baseline": 61.49
+      },
+      {
+        "date": "2026-09-16",
+        "actual": 67.69,
+        "predicted": 65.8,
+        "baseline": 61.09
+      },
+      {
+        "date": "2026-09-17",
+        "actual": 68.45,
+        "predicted": 64.61,
+        "baseline": 59.78
+      },
+      {
+        "date": "2026-09-18",
+        "actual": 65.91,
+        "predicted": 65.9,
+        "baseline": 61.18
+      },
+      {
+        "date": "2026-09-19",
+        "actual": 49.62,
+        "predicted": 51.04,
+        "baseline": 44.96
+      },
+      {
+        "date": "2026-09-20",
+        "actual": 51.14,
+        "predicted": 51.27,
+        "baseline": 44.67
+      },
+      {
+        "date": "2026-09-21",
+        "actual": 68.96,
+        "predicted": 65.56,
+        "baseline": 60.38
+      },
+      {
+        "date": "2026-09-22",
+        "actual": 69.52,
+        "predicted": 66.58,
+        "baseline": 61.49
+      },
+      {
+        "date": "2026-09-23",
+        "actual": 70.71,
+        "predicted": 66.66,
+        "baseline": 61.09
+      },
+      {
+        "date": "2026-09-24",
+        "actual": 66.57,
+        "predicted": 65.46,
+        "baseline": 59.78
+      },
+      {
+        "date": "2026-09-25",
+        "actual": 65.86,
+        "predicted": 66.76,
+        "baseline": 61.18
+      },
+      {
+        "date": "2026-09-26",
+        "actual": 66.21,
+        "predicted": 51.9,
+        "baseline": 44.96
+      }
+    ],
+    "explanation": "Projeção de energia validada, não de potência instantânea. Retenções e exclusões não entram na previsão. Comparação temporal de 14 dias; métricas sobre dados sintéticos não comprovam desempenho real."
+  },
+  "model": {
+    "method": "robust-zscore",
+    "threshold": 4.5,
+    "features": [
+      "energia_kwh",
+      "duracao_min",
+      "potencia_media_kw",
+      "ociosidade_min"
+    ],
+    "median": [
+      14.5585,
+      153.5,
+      6.076,
+      14.0
+    ],
+    "scale": [
+      2.0,
+      20.7564,
+      1.0,
+      10.0
+    ],
+    "training_rows": 248,
+    "trained_before": "2026-09-01",
+    "training_data_hash": "f99df2ebabe8a28a06c4e0c380e9df4c08c0123a241bb2f977b821e37d2e2271",
+    "version": "3f296ff12864"
+  },
+  "billing": {
+    "month": "2026-10",
+    "closed": true,
+    "closed_at": "2026-09-27T15:17:18.188100+00:00",
+    "tariff": {
+      "tariff_kwh": "0.950000",
+      "session_fee": "1.50",
+      "idle_fee": "0.1000",
+      "idle_grace_minutes": "15",
+      "loss_percent": "2.0000",
+      "fixed_fee": "0.00"
+    },
+    "units": [
+      {
+        "unit_id": "ap101",
+        "label": "Apartamento 101",
+        "items": [
+          {
+            "session_id": "sim-cc52c19c5624",
+            "started_at": "2026-10-26T19:00:00-03:00",
+            "status": "completed",
+            "energy_kwh": 14.2,
+            "cost_center": "resident",
+            "energy_cents": 1349,
+            "operation_cents": 150,
+            "idle_cents": 0,
+            "loss_cents": 27,
+            "total_cents": 1526
+          },
+          {
+            "session_id": "sim-550aa86359fe",
+            "started_at": "2026-10-26T19:00:00-03:00",
+            "status": "interrupted",
+            "energy_kwh": 4.5,
+            "cost_center": "resident",
+            "energy_cents": 428,
+            "operation_cents": 150,
+            "idle_cents": 0,
+            "loss_cents": 9,
+            "total_cents": 587
+          },
+          {
+            "session_id": "sim-670dac378158",
+            "started_at": "2026-10-26T19:00:00-03:00",
+            "status": "completed",
+            "energy_kwh": 14.2,
+            "cost_center": "promotion",
+            "energy_cents": 0,
+            "operation_cents": 0,
+            "idle_cents": 0,
+            "loss_cents": 0,
+            "total_cents": 0
+          },
+          {
+            "session_id": "sim-77c1080d8368",
+            "started_at": "2026-10-26T19:00:00-03:00",
+            "status": "completed",
+            "energy_kwh": 12.0,
+            "cost_center": "resident",
+            "energy_cents": 1140,
+            "operation_cents": 150,
+            "idle_cents": 0,
+            "loss_cents": 23,
+            "total_cents": 1313
+          }
+        ],
+        "energy_kwh": 44.9,
+        "fixed_cents": 0,
+        "credits": [
+          {
+            "id": "evidence-credit-2026-10",
+            "amount_cents": 500,
+            "reason": "Crédito didático da validação ponta a ponta"
+          }
+        ],
+        "credit_cents": 500,
+        "total_cents": 2926,
+        "pending_count": 0
+      },
+      {
+        "unit_id": "ap102",
+        "label": "Apartamento 102",
+        "items": [],
+        "energy_kwh": 0,
+        "fixed_cents": 0,
+        "credits": [],
+        "credit_cents": 0,
+        "total_cents": 0,
+        "pending_count": 0
+      },
+      {
+        "unit_id": "ap201",
+        "label": "Apartamento 201",
+        "items": [],
+        "energy_kwh": 0,
+        "fixed_cents": 0,
+        "credits": [],
+        "credit_cents": 0,
+        "total_cents": 0,
+        "pending_count": 0
+      },
+      {
+        "unit_id": "ap202",
+        "label": "Apartamento 202",
+        "items": [],
+        "energy_kwh": 0,
+        "fixed_cents": 0,
+        "credits": [],
+        "credit_cents": 0,
+        "total_cents": 0,
+        "pending_count": 0
+      },
+      {
+        "unit_id": "ap301",
+        "label": "Apartamento 301",
+        "items": [],
+        "energy_kwh": 0,
+        "fixed_cents": 0,
+        "credits": [],
+        "credit_cents": 0,
+        "total_cents": 0,
+        "pending_count": 0
+      }
+    ],
+    "pending_count": 0,
+    "total_cents": 2926
+  },
+  "sessions": [
+    {
+      "id": "sim-16ad1277e7fd",
+      "charger_id": "hca-g2-01",
+      "user_id": "resident-101",
+      "unit_id": "ap101",
+      "vehicle_id": "veh-101",
+      "month": "2026-10",
+      "started_at": "2026-10-26T19:00:00-03:00",
+      "ended_at": "2026-10-26T21:30:00-03:00",
+      "energy_kwh": 0.0,
+      "duration_minutes": 150.0,
+      "average_power_kw": 0.0,
+      "idle_minutes": 10,
+      "status": "completed",
+      "stop_reason": "vehicle_disconnected",
+      "cost_center": "resident",
+      "eligibility": "excluded",
+      "quality_issues": [
+        "Medidor final inferior ao inicial.",
+        "Energia declarada diverge da diferença entre medidores."
+      ],
+      "anomaly": {
+        "flagged": true,
+        "status": "scored",
+        "score": 7.28,
+        "threshold": 4.5,
+        "version": "3f296ff12864",
+        "reasons": [
+          "energia_kwh: 0.00; referência histórica 14.56; desvio robusto 7.3",
+          "potencia_media_kw: 0.00; referência histórica 6.08; desvio robusto 6.1"
+        ],
+        "explanation": "energia_kwh: 0.00; referência histórica 14.56; desvio robusto 7.3; potencia_media_kw: 0.00; referência histórica 6.08; desvio robusto 6.1"
+      },
+      "review_reason": "Inconsistência confirmada no cenário sintético",
+      "reviewed_by": "manager",
+      "source": "simulator"
+    },
+    {
+      "id": "sim-550aa86359fe",
+      "charger_id": "hca-g2-01",
+      "user_id": "resident-101",
+      "unit_id": "ap101",
+      "vehicle_id": "veh-101",
+      "month": "2026-10",
+      "started_at": "2026-10-26T19:00:00-03:00",
+      "ended_at": "2026-10-26T19:48:00-03:00",
+      "energy_kwh": 4.5,
+      "duration_minutes": 48.0,
+      "average_power_kw": 5.625,
+      "idle_minutes": 0,
+      "status": "interrupted",
+      "stop_reason": "power_interruption",
+      "cost_center": "resident",
+      "eligibility": "eligible",
+      "quality_issues": [],
+      "anomaly": {
+        "flagged": false,
+        "status": "scored",
+        "score": 1.4,
+        "threshold": 4.5,
+        "version": "3f296ff12864",
+        "reasons": [],
+        "explanation": "Sessão compatível com o histórico de referência."
+      },
+      "review_reason": null,
+      "reviewed_by": null,
+      "source": "simulator"
+    },
+    {
+      "id": "sim-670dac378158",
+      "charger_id": "hca-g2-01",
+      "user_id": "resident-101",
+      "unit_id": "ap101",
+      "vehicle_id": "veh-101",
+      "month": "2026-10",
+      "started_at": "2026-10-26T19:00:00-03:00",
+      "ended_at": "2026-10-26T21:30:00-03:00",
+      "energy_kwh": 14.2,
+      "duration_minutes": 150.0,
+      "average_power_kw": 6.086,
+      "idle_minutes": 10,
+      "status": "completed",
+      "stop_reason": "vehicle_disconnected",
+      "cost_center": "promotion",
+      "eligibility": "eligible",
+      "quality_issues": [],
+      "anomaly": {
+        "flagged": false,
+        "status": "scored",
+        "score": 0.4,
+        "threshold": 4.5,
+        "version": "3f296ff12864",
+        "reasons": [],
+        "explanation": "Sessão compatível com o histórico de referência."
+      },
+      "review_reason": null,
+      "reviewed_by": null,
+      "source": "simulator"
+    },
+    {
+      "id": "sim-77c1080d8368",
+      "charger_id": "hca-g2-01",
+      "user_id": "resident-101",
+      "unit_id": "ap101",
+      "vehicle_id": "veh-101",
+      "month": "2026-10",
+      "started_at": "2026-10-26T19:00:00-03:00",
+      "ended_at": "2026-10-27T05:50:00-03:00",
+      "energy_kwh": 12.0,
+      "duration_minutes": 650.0,
+      "average_power_kw": 1.108,
+      "idle_minutes": 0,
+      "status": "completed",
+      "stop_reason": "vehicle_disconnected",
+      "cost_center": "resident",
+      "eligibility": "eligible",
+      "quality_issues": [],
+      "anomaly": {
+        "flagged": true,
+        "status": "scored",
+        "score": 23.92,
+        "threshold": 4.5,
+        "version": "3f296ff12864",
+        "reasons": [
+          "duracao_min: 650.00; referência histórica 153.50; desvio robusto 23.9",
+          "potencia_media_kw: 1.11; referência histórica 6.08; desvio robusto 5.0"
+        ],
+        "explanation": "duracao_min: 650.00; referência histórica 153.50; desvio robusto 23.9; potencia_media_kw: 1.11; referência histórica 6.08; desvio robusto 5.0"
+      },
+      "review_reason": "Conferência de duração longa em demonstração",
+      "reviewed_by": "manager",
+      "source": "simulator"
+    },
+    {
+      "id": "sim-b590b9ef475c",
+      "charger_id": "hca-g2-01",
+      "user_id": null,
+      "unit_id": null,
+      "vehicle_id": null,
+      "month": "2026-10",
+      "started_at": "2026-10-26T19:00:00-03:00",
+      "ended_at": "2026-10-26T21:30:00-03:00",
+      "energy_kwh": 14.2,
+      "duration_minutes": 150.0,
+      "average_power_kw": 6.086,
+      "idle_minutes": 10,
+      "status": "completed",
+      "stop_reason": "vehicle_disconnected",
+      "cost_center": "resident",
+      "eligibility": "excluded",
+      "quality_issues": [
+        "Sessão sem identificação de usuário/unidade."
+      ],
+      "anomaly": {
+        "flagged": false,
+        "status": "scored",
+        "score": 0.4,
+        "threshold": 4.5,
+        "version": "3f296ff12864",
+        "reasons": [],
+        "explanation": "Sessão compatível com o histórico de referência."
+      },
+      "review_reason": "Inconsistência confirmada no cenário sintético",
+      "reviewed_by": "manager",
+      "source": "simulator"
+    },
+    {
+      "id": "sim-cc52c19c5624",
+      "charger_id": "hca-g2-01",
+      "user_id": "resident-101",
+      "unit_id": "ap101",
+      "vehicle_id": "veh-101",
+      "month": "2026-10",
+      "started_at": "2026-10-26T19:00:00-03:00",
+      "ended_at": "2026-10-26T21:30:00-03:00",
+      "energy_kwh": 14.2,
+      "duration_minutes": 150.0,
+      "average_power_kw": 6.086,
+      "idle_minutes": 10,
+      "status": "completed",
+      "stop_reason": "vehicle_disconnected",
+      "cost_center": "resident",
+      "eligibility": "eligible",
+      "quality_issues": [],
+      "anomaly": {
+        "flagged": false,
+        "status": "scored",
+        "score": 0.4,
+        "threshold": 4.5,
+        "version": "3f296ff12864",
+        "reasons": [],
+        "explanation": "Sessão compatível com o histórico de referência."
+      },
+      "review_reason": null,
+      "reviewed_by": null,
+      "source": "simulator"
+    }
+  ],
+  "csv": "﻿Mes;Unidade;Energia_kWh;Sessoes;Quota_fixa_BRL;Creditos_BRL;Total_BRL;Estado\r\n2026-10;ap101;44,900;4;0,00;5,00;29,26;Fechado\r\n2026-10;ap102;0,000;0;0,00;0,00;0,00;Fechado\r\n2026-10;ap201;0,000;0;0,00;0,00;0,00;Fechado\r\n2026-10;ap202;0,000;0;0,00;0,00;0,00;Fechado\r\n2026-10;ap301;0,000;0;0,00;0,00;0,00;Fechado\r\n",
+  "result": "PASSED"
+}

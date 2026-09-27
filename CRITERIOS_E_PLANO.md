@@ -34,4 +34,4 @@ O entregável é um TXT com o link do repositório contendo um protótipo funcio
 
 ## Estado
 
-Entendimento concluído; implementação e validação em andamento. Consulte `docs/evidencias/VALIDACAO.md` para o resultado efetivamente obtido.
+Entendimento, implementação e validação concluídos em 27/09/2026. Passaram 31 testes backend, 3 testes de componentes e 15 verificações HTTP em cada banco (PostgreSQL e SQLite). A entrega no FIAP ON e o pitch individual continuam sendo ações do aluno. Consulte `docs/evidencias/VALIDACAO.md` para o resultado efetivamente obtido.

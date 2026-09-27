@@ -1,460 +1,232 @@
-# EV ChargeOps
+# EV ChargeOps — Sprint 02
 
-Projeto Enterprise Challenge 2026 - GoodWe / FIAP  
-Sprint 01 - Pesquisa, documentacao e proposta tecnica
+**Sessões de recarga rastreáveis, rateio por unidade e inteligência que participa da decisão.**
 
-## Equipe
+Protótipo funcional do Enterprise Challenge 2026, GoodWe + FIAP. Implementa a proposta da [Sprint 01](docs/sprint-01/README.md) com API, banco relacional, dashboard do gestor e portal do morador.
 
-- Nome da equipe: Grupo 5
-- Integrantes:
-  - Henrique Pires Espindola - RM 568600
+**Equipe atual:** Grupo 22 — Henrique Pires Espindola, RM 568600. O Grupo 22 é o exibido na atividade da Sprint 02; o documento anterior mencionava Grupo 5 e foi preservado como histórico. A identificação do integrante permanece a mesma.
 
-## Resumo da proposta
+![Dashboard em funcionamento](docs/evidencias/01-dashboard-final.png)
 
-O EV ChargeOps e uma plataforma para operar recarga compartilhada de veiculos eletricos em condominios, predios corporativos e campus universitarios. O problema central nao e apenas disponibilizar energia: e identificar quem usou o carregador, medir a sessao com confiabilidade, transformar kWh e tempo em cobranca justa, reduzir conflitos de rateio e oferecer ao gestor uma visao operacional clara.
+## O que funciona
 
-A proposta usa o carregador GoodWe HCA G2 como ponto fisico de recarga, integra dados de sessao via rede local, SEMS+ ou API, armazena eventos em uma base auditavel e aplica regras de rateio por usuario/unidade. A inteligencia artificial entra como componente estrutural para prever demanda, detectar anomalias de consumo e apoiar o gestor com recomendacoes operacionais.
+- Registro de sessões com usuário, unidade, veículo, carregador, horários, medidores, energia e motivo de encerramento.
+- Ingestão idempotente: repetir um mesmo evento não duplica o consumo; reutilizar seu identificador com outro conteúdo gera conflito.
+- Validação de identidade, medição e potência compatível com tempo ativo.
+- Rateio por kWh, taxa operacional, ociosidade, perdas, quota fixa opcional e créditos auditados.
+- Recargas interrompidas cobram somente energia medida; cortesias ficam em centro promocional.
+- Detector de anomalias treinado no histórico retém sessões antes da cobrança. Revisão humana exige justificativa.
+- Previsão do consumo mensal com regressão, validação temporal e comparação com uma referência semanal.
+- Filtros por mês, unidade, carregador, validação e tipo de encerramento; detalhamento do cálculo e exportação CSV.
+- Fechamento mensal persistido e imutável, com bloqueio enquanto houver pendências.
+- Login com perfis de gestor e morador. A API restringe o morador à própria unidade, inclusive no CSV.
 
-## Escopo da Sprint 01
+**Todos os dados operacionais são sintéticos.** O protótipo não acessa um HCA G2 real, não movimenta dinheiro e não controla instalações elétricas. As tarifas são hipóteses didáticas. Os dados identificam o comportamento do software, não uma operação real da GoodWe.
 
-Esta sprint nao exige codigo funcional. O foco e documentar pesquisa, contexto tecnico-regulatorio, arquitetura, modelo de rateio e plano de desenvolvimento para a Sprint 02.
+## Executar com Docker e PostgreSQL
 
-Opcoes de aprofundamento adotadas:
+Pré-requisitos: Docker e Docker Compose v2. Não é necessário configurar Python, Node ou credenciais externas.
 
-- Frente 1: Opcao A, analise de mercado; e Opcao C, dados publicos.
-- Frente 2: Opcao A, mapeamento regulatorio; e Opcao C, APIs complementares.
-- Frente 3: Opcao B, papel da IA; e Opcao C, esquema de dados.
+```bash
+git clone https://github.com/henriquepe/ev-chargeops-sprint-02.git
+cd ev-chargeops-sprint-02
+docker compose up -d --build --wait
+```
 
-## Frente 1 - Contexto e problema
+Abra **[http://localhost:8766](http://localhost:8766)**. A aplicação espera o PostgreSQL, aplica a migração, popula a demonstração e treina o detector. A primeira execução baixa as imagens e dependências.
 
-### Infraestrutura de recarga compartilhada
+| Perfil | E-mail | Senha de demonstração |
+|---|---|---|
+| Gestor | `gestor@demo.local` | `Demo2026!` |
+| Morador do apartamento 101 | `morador101@demo.local` | `Demo2026!` |
+| Outros moradores | `morador102@demo.local`, `morador201@demo.local`, `morador202@demo.local`, `morador301@demo.local` | `Demo2026!` |
 
-Infraestrutura de recarga compartilhada e o conjunto de equipamentos, rede eletrica, conectividade, regras de uso e sistemas de gestao que permitem que varios usuarios carreguem veiculos eletricos usando pontos comuns ou semi-compartilhados. Em um condominio, por exemplo, o ponto pode estar em uma vaga rotativa, em area comum ou em vaga privativa conectada a uma infraestrutura coletiva.
+As senhas são públicas porque pertencem somente à demonstração. A aplicação é vinculada a `127.0.0.1`; não publique esse ambiente com dados reais. No banco, as senhas usam scrypt e os tokens opacos são armazenados somente como hash, com validade de oito horas e revogação no logout.
 
-Os principais desafios operacionais sao:
+```bash
+docker compose ps
+docker compose logs -f app
+docker compose stop
+```
 
-- Identificacao do usuario: sem app, cartao RFID ou autenticacao equivalente, a administracao nao consegue associar consumo a uma pessoa ou unidade.
-- Medicao por sessao: a fatura condominial chega agregada, mas o consumo precisa ser separado por usuario, periodo, kWh e eventuais tarifas.
-- Justica no rateio: usuarios que nao carregam nao devem pagar pelo consumo variavel de quem carregou.
-- Capacidade eletrica: multiplos carregadores simultaneos podem exigir controle de carga para evitar sobrecarga.
-- Transparencia: moradores e gestores precisam consultar historico, custo, duracao e criterios de cobranca.
-- Auditoria: sessoes interrompidas, falhas de comunicacao e divergencias de medicao precisam ficar registradas.
-- Experiencia de uso: o usuario precisa saber se o carregador esta disponivel, iniciar a sessao com facilidade e receber comprovante.
+`stop` preserva os dados. `docker compose up -d` retoma o mesmo ambiente. O seed é idempotente e não sobrescreve as decisões feitas no painel. Para reiniciar os cenários desde o início, use **outro nome de projeto e outra porta**, preservando a demonstração existente:
 
-### Como funciona uma sessao de recarga
+```bash
+APP_PORT=8767 docker compose -p chargeops-demo-nova up -d --build --wait
+```
 
-Uma sessao de recarga pode ser entendida como uma sequencia de eventos:
+## Alternativa local com SQLite
 
-1. O veiculo e conectado ao carregador.
-2. O carregador detecta a conexao e valida condicoes eletricas e de seguranca.
-3. O usuario se identifica via app, RFID, regra de auto start ou autorizacao do gestor.
-4. A sessao e iniciada e passa a gerar eventos de tempo, potencia, energia entregue e status.
-5. A plataforma coleta ou recebe os dados da sessao.
-6. Ao final, a sessao e encerrada por desconexao, comando do usuario, carga completa ou falha.
-7. O sistema calcula kWh, duracao, custo e vincula o resultado ao usuario ou unidade.
-8. O gestor acompanha indicadores agregados e o usuario recebe demonstrativo individual.
+Use Python 3.13 e Node 22 (Node 20.19 também foi utilizado no desenvolvimento), com npm disponível. O SQLite facilita a avaliação sem Docker, usando os mesmos modelos, migrações, API e regras. Para concorrência entre operadores, prefira a execução com PostgreSQL.
 
-Campos minimos de uma sessao:
+```bash
+PYTHON_BIN=python3.13 ./scripts/start.sh
+```
 
-- `session_id`
-- `charger_id`
-- `connector_id`
-- `user_id` ou `rfid_tag_id`
-- `unit_id`
-- `started_at`
-- `ended_at`
-- `energy_kwh`
-- `duration_minutes`
-- `peak_power_kw`
-- `average_power_kw`
-- `start_meter_kwh`
-- `end_meter_kwh`
-- `status`
-- `stop_reason`
-- `cost_center`
+Abra **[http://localhost:8765](http://localhost:8765)**. O script cria `.venv`, instala dependências, compila o frontend, migra e popula `backend/data/chargeops.db`. Rode na raiz do projeto. `Ctrl+C` encerra o servidor, preservando o banco.
 
-### Modelos de negocio para recarga compartilhada
+Para desenvolvimento com atualização das telas, mantenha o backend acima rodando e, em outro terminal, execute `npm run dev --prefix frontend`. O Vite encaminha `/api` para a porta 8765. A documentação interativa da API está em `/docs`.
 
-| Modelo | Como funciona | Pontos fortes | Limitacoes |
-| --- | --- | --- | --- |
-| Recarga gratuita | O local absorve o custo como beneficio ou atrativo | Simples para o usuario | Injusto em condominios; nao escala com uso intenso |
-| Cobranca por kWh | Usuario paga pela energia entregue | Mais justo e facil de explicar | Depende de medicao confiavel e regra tributaria/local |
-| Cobranca por tempo | Usuario paga por minuto ou hora conectado | Desestimula ociosidade da vaga | Pode punir carga lenta ou veiculos com limites tecnicos |
-| Assinatura mensal | Usuario paga valor fixo por acesso ou franquia | Receita previsivel | Pode gerar subsidio cruzado entre usuarios leves e intensos |
-| Rateio condominial | Consumo e custos sao alocados por usuario/unidade | Adequado para predios compartilhados | Exige relatorios claros e aprovacao de regras internas |
-| Modelo hibrido | Combina kWh, tempo ocioso, taxa de operacao e assinatura | Mais flexivel e justo | Requer comunicacao clara para evitar disputa |
+## Demonstrar em poucos minutos
 
-### Analise de mercado
+1. Entre como **gestor** e selecione **setembro de 2026**. A base original tem 108 sessões nesse mês e três retenções. O total histórico de julho a setembro é de 356 registros.
+2. Em **Simular recarga**, gere uma sessão normal. Confira o identificador, os 14,2 kWh e a validação na janela de detalhes.
+3. Abra `demo-anomaly`: a duração de 650 minutos foge do histórico e a IA a retém. Escreva a justificativa e libere a cobrança ou exclua a sessão. A decisão aparece na auditoria.
+4. Tente liberar `demo-meter_error` ou `demo-unidentified`: a interface impede liberar dados inconsistentes. Exclua com justificativa; uma correção deve ser importada como novo registro, preservando o original.
+5. Em **Rateio e faturas**, abra **Ver cálculo**. Confira energia, operação, ociosidade, perdas e créditos separadamente. O apartamento 301 não consumiu e, com quota fixa zero, não paga.
+6. Em **Inteligência**, observe o corte de treinamento, o erro da regressão e o da referência semanal.
+7. Depois de resolver todas as retenções, feche o mês e exporte o CSV. Para ensaiar o fechamento sem mexer em setembro, agosto também está disponível.
+8. Saia e entre como **morador**. Somente as sessões e o demonstrativo do apartamento autenticado ficam disponíveis.
 
-| Solucao | Problema que resolve | Funcionalidades principais | Modelo de negocio | Limitacoes observadas | Aprendizado para o EV ChargeOps |
-| --- | --- | --- | --- | --- | --- |
-| Zaptec Pro | Recarga em garagens compartilhadas e predios multifamiliares | Gestao de acesso, portal, multiplas opcoes de pagamento, balanceamento dinamico de carga, escalabilidade para muitos carregadores | Venda de carregadores e ecossistema de gestao/pagamento integrado por parceiros | Ecossistema orientado ao hardware Zaptec; adequacao local depende de integrador e disponibilidade regional | Escalar carregadores requer gestao de carga e pagamento desde o desenho inicial, nao como complemento |
-| Wallbox Pulsar Plus | Recarga residencial e multifamiliar compacta com gestao de energia | App, agendamento, Wi-Fi/Bluetooth, medidor de energia, gerenciamento dinamico de carga e integracao solar | Venda de equipamento e acessorios de energia | Foco forte em uso residencial; recursos de cobranca multiusuario podem exigir componentes externos | A experiencia do usuario precisa ser simples, mas o gestor precisa de camada propria de rateio |
-| ChargePoint | Operacao de redes de recarga em escala | Plataforma de gestao, monitoramento, diagnostico, app, pagamentos, roaming, APIs e OCPP | Software/plataforma, rede de recarga e hardware | Solucao robusta, mas possivelmente mais complexa e cara que o necessario para um condominio pequeno | O EV ChargeOps deve herdar a ideia de plataforma operacional, mas manter escopo enxuto para ambientes compartilhados |
-| WEG WEMOB | Recarga em condominios com controle e cobranca | Plataforma de gestao, monitoramento, gateway de pagamento, relatorios e cobranca automatica | Equipamentos WEMOB e plataforma de operacao | Dependencia do ecossistema WEG; foco em equipamentos da propria marca | A cobranca precisa ser automatizada e transparente para reduzir intermediarios e contestacoes |
+Ao modificar a demonstração, os totais mudam. As capturas e relatórios registram o estado na hora em que foram produzidos.
 
-Conclusao da frente: o mercado ja oferece bons carregadores e plataformas, mas ainda existe espaco para uma solucao focada em inteligencia operacional e rateio auditavel para infraestruturas compartilhadas que ja possuem carregadores instalados, como o HCA G2 da GoodWe no Energy Innovation Lab.
+## Arquitetura implementada
 
-### Dados publicos e tendencia de demanda
-
-A ABVE indica crescimento acelerado da eletromobilidade no Brasil. Em fevereiro de 2026 foram emplacados 24.885 veiculos leves eletrificados, alta de 92% sobre fevereiro de 2025. A participacao dos eletrificados nas vendas domesticas de veiculos leves chegou a 14% naquele mes, e os plug-in representaram 69% dos eletrificados emplacados. Esses dados indicam aumento da pressao por infraestrutura de recarga em predios e estacionamentos compartilhados.
-
-Para o projeto, isso reforca duas decisoes:
-
-- A plataforma deve nascer preparada para multiplos usuarios e multiplos carregadores, mesmo que o MVP comece com um unico HCA G2.
-- O modelo de dados deve registrar sessoes historicas desde o inicio, pois a inteligencia operacional depende de massa de dados acumulada.
-
-## Frente 2 - Base regulatoria e tecnica
-
-### Regulacao ANEEL
-
-A ANEEL informa que a Resolucao Normativa 819/2018 foi a primeira regulamentacao sobre recarga de veiculos eletricos e que suas disposicoes foram consolidadas na Resolucao Normativa 1.000/2021, no capitulo sobre instalacao de recargas de veiculos eletricos. A Agencia adota regulacao minima para evitar interferencias indesejaveis na rede e para impedir impacto tarifario indevido sobre consumidores das distribuidoras.
-
-Ponto relevante para o EV ChargeOps: a recarga de veiculos eletricos pode ser realizada por qualquer interessado, inclusive com exploracao comercial e precos livremente negociados. Para ambientes privados compartilhados, isso permite estruturar cobranca ou rateio, desde que haja conformidade com normas eletricas, regras condominiais e transparencia.
-
-### Regulacao em Sao Paulo
-
-A Lei Estadual de Sao Paulo n. 18.403/2026 assegura ao condomino o direito de instalar, as suas expensas, estacao de recarga individual em vaga privativa, desde que respeitadas normas tecnicas e de seguranca. A lei exige compatibilidade com a carga eletrica, conformidade com normas da distribuidora e ABNT, instalacao por profissional habilitado com ART/RRT e comunicacao formal previa ao condominio. Tambem impede proibicao sem justificativa tecnica ou de seguranca fundamentada.
-
-Impacto para o projeto:
-
-- O EV ChargeOps deve gerar registros auditaveis de consumo e operacao.
-- A solucao deve permitir vincular sessao a unidade/usuario para apoiar responsabilizacao por consumo.
-- A arquitetura deve respeitar a gestao condominial: o sistema informa e registra; nao substitui laudo tecnico, ART/RRT ou decisao formal de infraestrutura.
-
-### Carregador GoodWe HCA G2
-
-O GoodWe HCA G2 e um carregador AC com versoes de 7 kW, 11 kW e 22 kW. A documentacao da GoodWe informa suporte a autenticacao por app, RFID e auto start, alem de comunicacao por Bluetooth, Wi-Fi, RS-485 e LAN. A ficha tecnica tambem indica protocolo Modbus TCP, modos de carregamento rapido, prioridade fotovoltaica, PV + bateria, agendamento e controle dinamico de carga.
-
-Uso das interfaces no EV ChargeOps:
-
-- RFID: identifica usuario ou unidade no inicio da sessao.
-- Wi-Fi/LAN: conecta o carregador ao SEMS+ ou a rede local para monitoramento e coleta.
-- RS-485: permite integracao local com medidor, controlador ou gateway industrial.
-- Modbus TCP: caminho tecnico para leitura estruturada de variaveis quando disponivel.
-- Bluetooth: apoio a comissionamento, manutencao local e diagnostico.
-- SEMS+: camada de monitoramento, agendamento e gestao remota do ecossistema GoodWe.
-
-### API GoodWe SEMS
-
-A GoodWe apresenta o SEMS+ como plataforma de monitoramento e controle do ecossistema, incluindo inversores, baterias e EV chargers. A documentacao publica completa da API SEMS nao e aberta de forma consistente para todos os usuarios; ha referencias publicas a autenticacao, power stations e dados de monitoramento, mas a validacao completa deve ser feita na Sprint 02 com uma conta SEMS real do laboratorio.
-
-Campos alvo para integracao:
-
-- status do carregador: online, offline, carregando, falha;
-- potencia instantanea;
-- energia entregue no dia e acumulada;
-- eventos de inicio e fim de sessao;
-- identificador do carregador;
-- timestamp de atualizacao;
-- falhas e alarmes;
-- modo de operacao;
-- identificador de autenticacao, quando disponivel.
-
-Decisao tecnica: o MVP deve ter um adaptador de integracao com duas entradas possiveis. A primeira usa dados reais do SEMS/GoodWe quando houver acesso. A segunda usa eventos simulados com o mesmo contrato JSON, permitindo desenvolver rateio, dashboard e IA sem depender da liberacao imediata da API.
-
-### APIs complementares
-
-| API | Dados uteis | Uso no EV ChargeOps |
-| --- | --- | --- |
-| Open Charge Map API | Localizacao, tipos de conectores, operadores, metadados de pontos de recarga | Benchmark de densidade de pontos proximos e comparacao com infraestrutura do campus/condominio |
-| Google Places API, campo `evChargeOptions` | Quantidade de carregadores EV em lugares cadastrados, dados de local e contexto | Enriquecer mapas e validar disponibilidade de recarga no entorno |
-| ANEEL Open Data | Dados do setor eletrico, distribuidoras e contexto regulatorio/infraestrutura | Apoiar analises de concessionaria, area de concessao e indicadores eletricos |
-| IBGE API | Municipio, UF, regioes e dados territoriais | Normalizar localizacao e cruzar perfis regionais em analises futuras |
-
-## Frente 3 - Arquitetura e IA
-
-### Diagrama de arquitetura
-
-![Diagrama de arquitetura do EV ChargeOps](docs/arquitetura-ev-chargeops.svg)
-
-### Camadas da plataforma
-
-| Camada | Componentes | Responsabilidade |
-| --- | --- | --- |
-| Fisica | Veiculo eletrico, GoodWe HCA G2, RFID, medidor, quadro eletrico | Entregar energia com seguranca e gerar sinais de sessao |
-| Conectividade | LAN, Wi-Fi, RS-485, Modbus TCP, SEMS+ | Transportar dados do carregador para a plataforma |
-| Ingestao | Adaptador GoodWe, simulador de sessoes, fila/event log | Normalizar eventos e preservar rastreabilidade |
-| Aplicacao | API, regras de negocio, motor de rateio, servicos de IA | Transformar dados em cobranca e inteligencia operacional |
-| Dados | Banco relacional, logs de auditoria, historico de telemetria | Persistir sessoes, usuarios, faturas e eventos |
-| Apresentacao | Dashboard do gestor, portal/app do usuario, exportacao de fatura | Tornar consumo, custo e operacao compreensiveis |
-
-### Fluxo de dados da sessao ate a fatura
-
-1. Usuario se autentica via RFID ou app.
-2. O carregador inicia a sessao e registra timestamp inicial e medicao inicial.
-3. A plataforma recebe eventos periodicos de potencia, energia e status.
-4. O encerramento da sessao gera timestamp final, medicao final e motivo de parada.
-5. A camada de ingestao valida se a sessao tem usuario, carregador, inicio, fim e kWh.
-6. O motor de rateio aplica tarifa, regras condominiais, eventuais taxas e excecoes.
-7. A IA avalia previsao de demanda e anomalias para sinalizar casos ao gestor.
-8. A fatura mensal consolida sessoes por usuario/unidade.
-9. O usuario acessa o demonstrativo e o gestor exporta relatorios para administracao.
-
-### Modelo de rateio proposto
-
-O modelo adotado e hibrido: cobranca variavel por kWh consumido, acrescida de componentes opcionais para custo fixo operacional e penalidade por ociosidade quando houver regra aprovada.
-
-Formula base por sessao:
+![Arquitetura da Sprint 02](docs/arquitetura-sprint02.svg)
 
 ```text
-custo_sessao =
-  energia_kwh * tarifa_kwh_mes
-  + taxa_operacional_sessao
-  + custo_ociosidade
-  + ajuste_perdas
+Simulador ou JSON normalizado → FastAPI → validação → detector treinado
+                                                   ↓
+                           revisão humana ← sessão retida
+                                                   ↓
+                          sessão elegível → rateio → fatura/CSV
+                                                   ↓
+                            histórico validado → previsão → dashboard
 ```
 
-Formula mensal por usuario/unidade:
+- **FastAPI:** contratos Pydantic, autorização por perfil e endpoints de domínio.
+- **SQLAlchemy + Alembic:** 12 tabelas de domínio mais tabela de versão de migração; chaves estrangeiras, unicidade de sessão e fatura por mês/unidade.
+- **PostgreSQL:** execução principal do Compose, com travas por período e por sessão na revisão. SQLite: alternativa local com um worker, sem promessa de concorrência equivalente.
+- **React + Vite + Recharts:** interface, filtros, gráficos, revisão, demonstrativos e portal. Os dados vêm da API; os cartões não são valores fixos no frontend.
+- **NumPy/pandas/scikit-learn/joblib:** preparação do histórico, detector robusto, regressão e artefato de modelo.
+- **Auditoria:** eventos persistidos na mesma transação que ingestões, revisões, alterações de tarifa, créditos e fechamento. É rastreabilidade de aplicação, não um registro inviolável contra um administrador do banco.
+
+O schema completo está em [models.py](backend/app/models.py) e na [migração inicial](backend/migrations/versions/1814b67da20a_cria_dominio_de_recarga_rateio_e_.py). O payload original e seu hash permanecem associados à sessão. Não há exclusão física de sessões pela API.
+
+## Rateio e casos de borda
 
 ```text
-total_mensal_usuario =
-  soma(custo_sessao do usuario no periodo)
-  + quota_fixa_infraestrutura opcional
-  - creditos_ou_estornos
+energia = medidor_final − medidor_inicial
+energia_R$ = energia × tarifa_kWh
+ociosidade_R$ = max(0, minutos_ociosos − franquia) × taxa_minuto
+perdas_R$ = energia_R$ × percentual_perdas / 100
+sessao_R$ = energia_R$ + taxa_operacional + ociosidade_R$ + perdas_R$
+unidade_R$ = soma(sessões elegíveis) + quota_fixa − créditos
 ```
 
-Variaveis usadas:
+Cada componente é calculado com `Decimal`, arredondado em centavos com `ROUND_HALF_UP` e depois somado. O JSON monetário usa inteiros em centavos, evitando ponto flutuante na cobrança.
 
-- `energia_kwh`: energia medida na sessao.
-- `tarifa_kwh_mes`: tarifa media efetiva do condominio no periodo, incluindo tributos e bandeiras quando aplicavel.
-- `taxa_operacional_sessao`: custo fixo opcional para cobrir manutencao, gateway, software ou administracao.
-- `idle_minutes`: minutos em que o veiculo permaneceu conectado apos encerramento/carga completa.
-- `custo_ociosidade`: valor por minuto ocioso, se aprovado para vagas rotativas.
-- `ajuste_perdas`: percentual tecnico para perdas internas ou arredondamentos, se adotado.
-- `unit_id`: unidade condominial responsavel.
-- `vehicle_id`: veiculo associado, quando houver mais de um por unidade.
+**Exemplo verificável:** 14,2 kWh × R$ 0,95 = R$ 13,49; operação R$ 1,50; perdas de 2% = R$ 0,27; dez minutos ociosos dentro da franquia de quinze não geram taxa. Total: **R$ 15,26**. O teste executa esse cálculo.
 
-Tratamento de excecoes:
+- A competência é o mês do **início em America/Sao_Paulo**. Sessões que atravessam meses não são fracionadas nesta versão.
+- O tempo ativo é duração total menos ociosidade. A potência média ativa não pode exceder 105% da nominal; a margem de 5% é uma hipótese de validação do protótipo.
+- Energia declarada, quando fornecida, deve concordar com a diferença de medidores dentro de 0,01 kWh. Um medidor regressivo ou incompatível gera retenção; o payload bruto preserva a inconsistência.
+- Sessões interrompidas mantêm a energia entregue e as taxas da regra do mês. Baixo consumo/duração decorrente da interrupção não é, sozinho, anomalia estatística.
+- Identificação ausente ou incompatível e falhas de medição **não podem ser aprovadas**. Devem ser excluídas e, se houver dados corretos, reimportadas com outro identificador.
+- Uma unidade pode ter dois veículos; ambos consolidam no mesmo demonstrativo. Cortesias têm todos os componentes da sessão zerados, sem redistribuir esse custo aos moradores.
+- A quota fixa opcional aplica-se a todas as unidades, inclusive às sem recarga, somente quando configurada. O padrão é zero.
+- Créditos exigem motivo e chave idempotente. Um saldo negativo indica crédito da unidade; não dispara transferência financeira.
+- O fechamento bloqueia se houver qualquer sessão pendente, inclusive sem unidade. Depois dele, sessões, créditos, regras e revisões do período são bloqueados. Repetir um fechamento concluído retorna seu snapshot. Requisições concorrentes podem receber 409 e devem consultar novamente o estado.
 
-- Sessao interrompida: cobrar apenas kWh efetivamente entregue; marcar status como `interrupted` e registrar motivo.
-- Usuario que nao carregou no mes: nao paga consumo variavel; pode pagar quota fixa apenas se a regra condominial assim definir.
-- Dois veiculos da mesma unidade: sessoes ficam separadas por veiculo, mas fatura consolida por unidade.
-- Sessao sem identificacao: fica em quarentena e nao e cobrada ate validacao do gestor.
-- Falha de medicao: usar evento de auditoria e excluir do fechamento automatico ate revisao.
-- Recarga gratuita promocional: registrar consumo em centro de custo separado para nao distorcer rateio dos moradores.
+## Por que a IA é estrutural
 
-Justificativa: cobrar por kWh e a base mais justa porque acompanha o uso real. A taxa operacional e a ociosidade sao separadas para nao misturar consumo energetico com regras de gestao da vaga.
+### Detecção de anomalias
 
-### Papel da IA
-
-A IA nao deve ser decorativa. Ela entra em pontos onde dados historicos de sessao geram decisao operacional melhor do que regra fixa.
-
-| Abordagem | Problema resolvido | Tecnica | Dados necessarios | Impacto esperado |
-| --- | --- | --- | --- | --- |
-| Previsao de consumo e demanda | Antecipar picos e planejar uso simultaneo | Regressao, modelos de serie temporal ou gradient boosting | Historico de sessoes, horario, dia da semana, kWh, duracao, quantidade de usuarios, clima opcional | Reduzir sobrecarga, apoiar agenda e dimensionamento |
-| Deteccao de anomalias | Identificar sessoes com consumo, duracao ou padrao fora do esperado | Isolation Forest, z-score robusto ou regras hibridas | kWh, duracao, potencia media, motivo de parada, usuario, carregador | Evitar cobrancas injustas e acelerar diagnostico |
-| Clusterizacao de perfis de uso | Entender grupos de usuarios e comportamento de recarga | K-Means, DBSCAN ou clustering hierarquico | Frequencia mensal, horario preferido, kWh medio, duracao media | Melhorar regras de ociosidade, comunicacao e planejamento |
-| Interface conversacional para gestor | Responder perguntas operacionais sem navegar em tabelas | NLP com RAG sobre base de sessoes e politicas internas | Sessoes, faturas, regras de rateio, logs | Facilitar auditoria e explicacao para moradores |
-
-Prioridade para Sprint 02: implementar previsao simples de consumo mensal e deteccao de anomalias. A interface conversacional fica como extensao se o MVP estiver estavel.
-
-### Esquema de dados proposto
-
-Entidades principais:
+O detector aprende **mediana e dispersão robusta** de energia, duração, potência média ativa e ociosidade em 248 sessões anteriores a 01/09/2026. Usa:
 
 ```text
-users
-- id
-- name
-- email
-- role
-- created_at
-
-units
-- id
-- label
-- building
-- responsible_user_id
-
-vehicles
-- id
-- unit_id
-- plate
-- model
-- connector_type
-
-rfid_tags
-- id
-- user_id
-- tag_code_hash
-- status
-
-chargers
-- id
-- manufacturer
-- model
-- serial_number
-- location
-- nominal_power_kw
-- status
-
-charging_sessions
-- id
-- charger_id
-- user_id
-- unit_id
-- vehicle_id
-- started_at
-- ended_at
-- energy_kwh
-- duration_minutes
-- peak_power_kw
-- average_power_kw
-- start_meter_kwh
-- end_meter_kwh
-- status
-- stop_reason
-- raw_source
-
-tariff_periods
-- id
-- reference_month
-- tariff_kwh
-- fixed_fee
-- idle_fee_per_minute
-- loss_factor_percent
-
-invoices
-- id
-- unit_id
-- reference_month
-- subtotal_energy
-- subtotal_fees
-- adjustments
-- total
-- status
-
-invoice_items
-- id
-- invoice_id
-- session_id
-- description
-- amount
-
-anomaly_flags
-- id
-- session_id
-- type
-- severity
-- explanation
-- reviewed_by
-- reviewed_at
+escala = max(1,4826 × MAD, piso_da_variável)
+z = |valor − mediana| / escala
+reter se algum z > 4,5
 ```
 
-Exemplo de registro simulado:
+MAD é a mediana dos desvios absolutos em relação à mediana. Os pisos `[2 kWh, 20 min, 1 kW, 10 min]` evitam divisão por zero e alertas por variações irrelevantes. O limiar 4,5 é uma escolha didática, não um valor calibrado em operação real. Para interrupções, desvios negativos de energia e duração são esperados e não retêm por si só.
 
-```json
-{
-  "session_id": "sess_2026_0001",
-  "charger_id": "goodwe_hca_g2_lab_l1",
-  "user_id": "user_001",
-  "unit_id": "ap_1204",
-  "vehicle_id": "veh_001",
-  "started_at": "2026-06-18T19:10:00-03:00",
-  "ended_at": "2026-06-18T21:35:00-03:00",
-  "energy_kwh": 18.4,
-  "duration_minutes": 145,
-  "peak_power_kw": 7.8,
-  "average_power_kw": 7.6,
-  "status": "completed",
-  "stop_reason": "vehicle_disconnected"
-}
+A inferência acontece na ingestão e define `eligibility=pending`. O motor de rateio só inclui `eligible`; o fechamento recusa pendências. Uma aprovação humana pode liberar uma anomalia estatística, mas não ignorar falhas duras de identificação/medição. Modelo, score, explicação, decisão e ator ficam registrados.
+
+Com menos de 30 sessões, o detector informa `insufficient_history` e as regras de qualidade continuam ativas. Importações anteriores ao corte recebem `historical_import`, sem uma pontuação que usasse seu próprio futuro. O modelo está congelado após o seed; não é retreinado silenciosamente ao aprovar uma anomalia.
+
+### Previsão mensal
+
+Consumo diário validado, incluindo dias de consumo zero, alimenta uma **regressão Ridge** com tendência e dia da semana. O sistema reserva os últimos 14 dias para validação, compara MAE com a média por dia da semana e seleciona o menor erro. Só depois reajusta o modelo escolhido com todo o histórico disponível até o corte para prever os dias restantes.
+
+Na base original, a regressão apresentou **MAE de aproximadamente 2,70 kWh/dia**; os números completos, datas e baseline estão no [relatório executado](docs/evidencias/postgresql.json). A demonstração usa corte em **27/09/2026**, considerando sessões encerradas antes desse dia. A seleção de meses anteriores limita o corte ao fim daquele mês. Sem 35 dias de observação, a API retorna insuficiência de histórico.
+
+A projeção é a energia validada já observada mais a energia diária prevista até o último dia do mês. Não prevê potência simultânea, não aciona balanceamento elétrico e não apresenta intervalo de confiança que não tenha sido estimado. Sessões retidas/excluídas ficam fora da série. Dados sintéticos comprovam a execução do método e não seu desempenho em campo.
+
+## Decisões e desvios em relação à Sprint 01
+
+| Plano anterior | Implementação e justificativa |
+|---|---|
+| FastAPI, PostgreSQL, SQLAlchemy/Alembic | Mantidos; SQLite acrescentado para facilitar execução sem Docker |
+| React/Vite ou Next.js | Escolhido React/Vite: uma API e uma interface local bastam para o protótipo |
+| Integração real GoodWe/SEMS quando houver acesso | Sem conta ou dados reais fornecidos; implementado o fallback simulado previsto e o contrato normalizado de importação. Não há adaptador SEMS homologado |
+| Fila/event log e telemetria periódica | Log transacional e importação da sessão encerrada; sem broker nem streaming, evitando infraestrutura sem necessidade demonstrada |
+| Usuário/RFID e veículo | Login e usuário/unidade/veículo implementados; leitor RFID e associação física de tags ficam para a integração de hardware |
+| Previsão e anomalias como prioridades | Ambas implementadas. Detector robusto foi escolhido entre as opções previstas por ser explicável com pouca massa histórica; regressão Ridge para previsão |
+| Chatbot/RAG e clustering opcionais | Não implementados: o foco foi completar o ciclo de cobrança e IA prioritária |
+| Cadastro completo de entidades | Usuários, unidades, veículos e carregadores são populados pela demonstração; API de consulta e relacionamento, sem telas de CRUD administrativo |
+| OAuth futuro | Login simples com perfis, hash de senha e token revogável; sem provedor externo |
+| Estornos | Créditos pré-fechamento auditados; reabertura, notas de ajuste e estornos pós-fechamento ficam fora do MVP |
+
+Para conectar o laboratório, ainda será necessário obter autorização/conta, confirmar protocolo e campos reais, mapear RFID, sincronizar horários, tratar retentativas e testar contra o equipamento. O contrato de entrada está em [SessionInput](backend/app/schemas.py). A referência de hardware da primeira fase não é prova de que uma API real foi integrada.
+
+## Testes e evidências
+
+```bash
+./scripts/check.sh
 ```
 
-## Plano para Sprint 02
+A suíte cobre cálculo decimal, promoção, interrupção, créditos, ociosidade, identificação, potência, idempotência, timezone, fechamento, autorização e ausência de dados futuros na previsão. Testes de componentes verificam retenção visível, abertura do detalhe e resultados vazios.
 
-Objetivo da Sprint 02: construir um prototipo funcional que demonstre o ciclo completo de uma sessao de recarga: coleta ou simulacao de dados, identificacao do usuario, armazenamento, rateio, dashboard e analise por IA.
+Para executar o fluxo completo contra o servidor **PostgreSQL real**:
 
-### Ordem de desenvolvimento
+```bash
+docker compose exec -T app python - --base http://127.0.0.1:8000 --month 2026-10 --output /tmp/evidence < scripts/evidence.py
+docker compose cp app:/tmp/evidence.json ./evidence.json
+```
 
-1. Preparacao do repositorio
-   - Definir stack, padrao de pastas, Docker Compose e variaveis de ambiente.
-   - Criar `README`, diagrama atualizado e backlog tecnico.
+Esse roteiro cria seis sessões de teste, resolve retenções, verifica dois revisores concorrentes, aplica crédito, fecha uma fatura de **R$ 29,26** e verifica acesso do morador. Ele fecha o mês escolhido; para repetir no mesmo banco, escolha outro mês ainda aberto, por exemplo `--month 2026-11`, ou uma nova instância Compose.
 
-2. Base de dados e contratos
-   - Implementar schema relacional.
-   - Criar migracoes.
-   - Definir contratos JSON de sessao, telemetria e fatura.
+- [Resultado e roteiro da validação](docs/evidencias/VALIDACAO.md)
+- [Log da suíte e do build](docs/evidencias/testes.txt)
+- [Execução HTTP PostgreSQL — JSON](docs/evidencias/postgresql.json) e [HTML](docs/evidencias/postgresql.html)
+- [Execução HTTP SQLite — JSON](docs/evidencias/sqlite.json) e [HTML](docs/evidencias/sqlite.html)
+- [Fatura do morador](docs/evidencias/04-fatura-morador.png) e [portal mobile](docs/evidencias/05-portal-mobile.png)
+- [Captura de revisão pela IA](docs/evidencias/03-revisao-ia.png)
+- [Guia de estudo e decisões de código](docs/GUIA_DE_ESTUDO.md)
+- [Roteiro para o pitch de três minutos](docs/PITCH_3_MINUTOS.md)
+- [Entendimento e rastreabilidade da rubrica](CRITERIOS_E_PLANO.md)
 
-3. Simulador de sessoes
-   - Gerar dados realistas de inicio/fim, kWh, potencia, falha e usuario.
-   - Permitir rodar demonstracao sem depender do carregador fisico.
+O workflow GitHub Actions executa testes backend, frontend e fluxo HTTP com PostgreSQL em ambiente novo.
 
-4. Backend operacional
-   - Criar API para usuarios, unidades, carregadores, sessoes e faturas.
-   - Implementar validacao de sessoes e logs de auditoria.
+## Organização
 
-5. Motor de rateio
-   - Calcular custo por sessao e fechamento mensal.
-   - Tratar excecoes: sessao interrompida, sem usuario, estorno e ociosidade.
+```text
+backend/app/       contratos, autenticação, domínio, rateio, IA, simulador e API
+backend/migrations/ schema versionado
+backend/tests/     testes de regra, integração e autorização
+frontend/src/      componentes React, cliente HTTP, estilos e testes
+scripts/           execução local, verificações e evidência HTTP
+Dockerfile         build da interface e execução da API
+compose.yaml       aplicação + PostgreSQL, com volumes e healthchecks
+docs/sprint-01/    pesquisa original preservada
+docs/evidencias/   capturas e saídas reais de validação
+entrega.txt        link do repositório para anexar ao FIAP ON
+```
 
-6. Dashboard do gestor
-   - Visao de consumo total, usuarios, sessoes, anomalias e exportacao de faturas.
-   - Filtros por mes, carregador, unidade e status.
+## Autoria, estudo e entrega
 
-7. Portal do usuario
-   - Historico de sessoes.
-   - Demonstrativo mensal individual.
-   - Status da ultima recarga.
+O desenvolvimento contou com apoio de IA para implementação e revisão. Os testes, decisões e limitações estão documentados para leitura crítica. A equipe deve estudar e conseguir explicar o código; este repositório não comprova sozinho a compreensão individual exigida pela instituição. O guia e o pitch são materiais de preparação.
 
-8. IA aplicada
-   - Previsao de consumo mensal com modelo simples.
-   - Deteccao de anomalias em sessoes.
-   - Explicacao curta do motivo da sinalizacao.
+O arquivo `entrega.txt` é o formato solicitado pela atividade. A entrega no FIAP ON e a gravação/apresentação individual do pitch são etapas distintas. Conforme o enunciado consultado, o prazo da Sprint 02 é **13/10/2026, às 23h59**, e a validação presencial é necessária para habilitar as notas.
 
-9. Integracao GoodWe
-   - Validar acesso SEMS/API com conta real.
-   - Criar adapter para dados reais mantendo fallback simulado.
+## Referências técnicas
 
-10. Validacao e pitch
-   - Preparar roteiro de demonstracao.
-   - Gravar evidencias tecnicas.
-   - Ensaiar pitch de 3 minutos com problema, solucao, arquitetura, IA e demonstracao.
+Consultadas em 27/09/2026. A pesquisa de contexto e suas fontes permanecem na documentação da Sprint 01.
 
-### Tecnologias propostas
-
-- Backend: Python com FastAPI.
-- Banco de dados: PostgreSQL.
-- ORM/migracoes: SQLAlchemy e Alembic.
-- IA/dados: pandas, scikit-learn e joblib.
-- Frontend: Next.js ou React com Vite.
-- Autenticacao no MVP: login simples com perfis `manager` e `user`; evolucao futura para OAuth.
-- Infra local: Docker Compose.
-- Visualizacao: Recharts ou equivalente.
-- Testes: pytest para backend e testes de componentes no frontend.
-
-## Criterios de aceite rastreados
-
-| Criterio do enunciado | Onde esta atendido |
-| --- | --- |
-| Nome da equipe e RMs | Secao "Equipe", com placeholders para preenchimento |
-| Descricao do problema e contexto | Secoes "Resumo da proposta" e "Frente 1" |
-| Tres frentes de pesquisa | Secoes "Frente 1", "Frente 2" e "Frente 3" |
-| Opcoes de aprofundamento | Secao "Escopo da Sprint 01" e subsecoes de mercado, regulacao, APIs, IA e dados |
-| Diagrama de arquitetura | `docs/arquitetura-ev-chargeops.svg` referenciado no README |
-| Modelo de rateio | Secao "Modelo de rateio proposto" |
-| Papel da IA | Secao "Papel da IA" |
-| Plano para Sprint 02 | Secao "Plano para Sprint 02" |
-| Fontes consultadas | Secao "Fontes consultadas" |
-
-## Fontes consultadas
-
-Acesso em 18/06/2026.
-
-- GoodWe - Company Profile: https://us.goodwe.com/company-profile
-- GoodWe - HCA G2 Series product page: https://www.goodwe.com.au/hca-g2
-- GoodWe - HCA G2 datasheet: https://en.goodwe.com/Ftp/EN/Downloads/Datasheet/GW_HCA-G2_Datasheet-EN.pdf
-- GoodWe - SEMS Smart Energy Management System: https://us.goodwe.com/sems-series-smart-energy-management-system
-- ANEEL - Veiculos Eletricos: https://www.gov.br/aneel/pt-br/assuntos/veiculos-eletricos
-- Assembleia Legislativa do Estado de Sao Paulo - Lei n. 18.403/2026: https://www.al.sp.gov.br/repositorio/legislacao/lei/2026/lei-18403-18.02.2026.html
-- ABVE - Numeros de fevereiro indicam eletromobilidade em ritmo acelerado em 2026: https://abve.org.br/numeros-de-fevereiro-indicam-eletromobilidade-em-ritmo-acelerado-em-2026/
-- Zaptec - Apartments and Landlords: https://www.zaptec.com/en-uk/charging-solutions/apartments-and-landlords
-- Wallbox - Pulsar Plus EV Charger: https://wallbox.com/en_us/pulsar-plus-ev-charger
-- ChargePoint - Unified EV Charging Management Software: https://www.chargepoint.com/products/software
-- ChargePoint - Mobile app and payments: https://www.chargepoint.com/drivers/mobile
-- WEG Digital - WEMOB para condominios: https://materiais.wegdigital.weg.net/weg-digital-wemob-condominios-canais
-- Open Charge Map - API Documentation: https://www.openchargemap.org/develop/api
-- Google Places API - Places API New overview, campo `evChargeOptions`: https://developers.google.com/maps/documentation/places/web-service/op-overview
-- ANEEL Open Data: https://dadosabertos-aneel.opendata.arcgis.com/
-- Governo Federal Conecta - API Registro de Referencia de Municipios/IBGE: https://www.gov.br/conecta/catalogo/apis/registro-referencia-municipios
+- [FastAPI — segurança e autenticação](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/): referência de autenticação; aqui optamos por tokens opacos revogáveis, não JWT.
+- [SQLAlchemy — ORM Quick Start](https://docs.sqlalchemy.org/en/20/orm/quickstart.html).
+- [scikit-learn — Ridge](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html).
+- [scikit-learn — detecção de novidades e outliers](https://scikit-learn.org/stable/modules/outlier_detection.html): distinção entre aprender referência histórica e avaliar novas observações.
+- [NIST — detecção de outliers](https://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm): dispersão robusta e MAD.
