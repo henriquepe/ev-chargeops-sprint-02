@@ -83,3 +83,7 @@ O mês futuro de outubro foi utilizado apenas como cenário sintético para pres
 - [Auditoria npm após correção](npm-audit.json).
 
 Para reproduzir, siga os comandos do README. O script `scripts/evidence.py` fecha o mês escolhido; use uma base nova ou outro mês aberto ao repetir. O repositório inclui workflow que valida backend, frontend e fluxo PostgreSQL a cada push.
+
+### Disponibilidade das imagens no CI
+
+A execução de 09/10 no GitHub passou em backend e frontend, mas o job PostgreSQL inicialmente parou antes de construir a aplicação: o Docker Hub respondeu `toomanyrequests` ao baixar sua imagem. A repetição confirmou o limite externo. O workflow passou a consultar o [cache público de imagens mantido pelo Google](https://docs.cloud.google.com/artifact-registry/docs/pull-cached-dockerhub-images), com fallback padrão para o Docker Hub. A configuração se aplica somente ao runner temporário do GitHub. Os testes com PostgreSQL já haviam passado na instalação local nova; a situação atual da execução remota pode ser consultada na aba Actions do repositório.
