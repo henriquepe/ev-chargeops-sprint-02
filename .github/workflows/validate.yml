@@ -28,21 +28,10 @@ jobs:
       - run: npm run build
   postgres:
     runs-on: ubuntu-latest
+    env:
+      DOCKER_LIBRARY: public.ecr.aws/docker/library
     steps:
       - uses: actions/checkout@v4
-      - name: Configure public Docker Hub cache
-        run: |
-          sudo python3 - <<'PY'
-          import json
-          from pathlib import Path
-
-          path = Path('/etc/docker/daemon.json')
-          config = json.loads(path.read_text()) if path.exists() else {}
-          config['registry-mirrors'] = ['https://mirror.gcr.io']
-          path.parent.mkdir(parents=True, exist_ok=True)
-          path.write_text(json.dumps(config))
-          PY
-          sudo systemctl restart docker
       - run: docker compose up -d --build --wait
       - run: docker compose exec -T app python - --base http://127.0.0.1:8000 --output /tmp/evidence < scripts/evidence.py
       - if: always()

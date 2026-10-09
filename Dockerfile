@@ -1,11 +1,12 @@
-FROM node:22-alpine AS web
+ARG DOCKER_LIBRARY=docker.io/library
+FROM ${DOCKER_LIBRARY}/node:22-alpine AS web
 WORKDIR /web
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ ./
 RUN npm run build
 
-FROM python:3.13-slim
+FROM ${DOCKER_LIBRARY}/python:3.13-slim
 ENV PYTHONUNBUFFERED=1 DATA_DIR=/app/data FRONTEND_DIST=/app/static
 WORKDIR /app
 COPY backend/requirements.txt ./
