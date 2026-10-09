@@ -1,0 +1,58 @@
+app-1  | {'created': False, 'message': 'Base existente preservada; seed não redefine dados.'}
+app-1  | INFO:     Started server process [39]
+app-1  | INFO:     Waiting for application startup.
+app-1  | INFO:     Application startup complete.
+app-1  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+app-1  | INFO:     127.0.0.1:60492 - "GET /api/health HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:63740 - "GET /api/health HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/auth/login HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:63740 - "GET /api/analytics?month=2026-09 HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:63740 - "GET /api/forecast?month=2026-09 HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:63740 - "GET /api/model HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:63740 - "PUT /api/tariffs/2026-10 HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/simulate HTTP/1.1" 201 Created
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/simulate HTTP/1.1" 201 Created
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/simulate HTTP/1.1" 201 Created
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/simulate HTTP/1.1" 201 Created
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/simulate HTTP/1.1" 201 Created
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/simulate HTTP/1.1" 201 Created
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/billing/2026-10/close HTTP/1.1" 409 Conflict
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/sessions/sim-7bbe9c9f6945/review HTTP/1.1" 422 Unprocessable Content
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/sessions/sim-7bbe9c9f6945/review HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/sessions/sim-3db185492e4c/review HTTP/1.1" 422 Unprocessable Content
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/sessions/sim-3db185492e4c/review HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/sessions/sim-cbf842dda960/review HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:63742 - "POST /api/sessions/sim-cbf842dda960/review HTTP/1.1" 409 Conflict
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/billing/2026-10/credits HTTP/1.1" 201 Created
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/billing/2026-10/credits HTTP/1.1" 201 Created
+app-1  | INFO:     192.168.176.1:63740 - "GET /api/sessions/sim-b704737d5054 HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/sessions HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/billing/2026-10/close HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/billing/2026-10/close HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/simulate HTTP/1.1" 409 Conflict
+app-1  | INFO:     192.168.176.1:63740 - "GET /api/sessions?month=2026-10 HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:63740 - "GET /api/billing/2026-10/csv HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:63740 - "POST /api/auth/login HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:63740 - "GET /api/billing/2026-10 HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:63740 - "GET /api/audit HTTP/1.1" 403 Forbidden
+app-1  | INFO:     192.168.176.1:63740 - "GET /api/billing/2026-10/csv HTTP/1.1" 200 OK
+app-1  | INFO:     127.0.0.1:32928 - "GET /api/health HTTP/1.1" 200 OK
+app-1  | INFO:     127.0.0.1:53020 - "GET /api/health HTTP/1.1" 200 OK
+app-1  | INFO:     127.0.0.1:38568 - "GET /api/health HTTP/1.1" 200 OK
+app-1  | INFO:     127.0.0.1:48432 - "GET /api/health HTTP/1.1" 200 OK
+app-1  | INFO:     127.0.0.1:45270 - "GET /api/health HTTP/1.1" 200 OK
+app-1  | INFO:     127.0.0.1:51612 - "GET /api/health HTTP/1.1" 200 OK
+app-1  | INFO:     127.0.0.1:49128 - "GET /api/health HTTP/1.1" 200 OK
+app-1  | INFO:     127.0.0.1:43002 - "GET /api/health HTTP/1.1" 200 OK
+app-1  | INFO:     127.0.0.1:49308 - "GET /api/health HTTP/1.1" 200 OK
+app-1  | INFO:     127.0.0.1:51918 - "GET /api/health HTTP/1.1" 200 OK
+app-1  | INFO:     127.0.0.1:45638 - "GET /api/health HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:55248 - "POST /api/auth/login HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:55248 - "PUT /api/tariffs/2026-11 HTTP/1.1" 200 OK
+app-1  | INFO:     192.168.176.1:55248 - "POST /api/sessions HTTP/1.1" 201 Created
+app-1  | INFO:     192.168.176.1:55248 - "GET /api/billing/2026-11 HTTP/1.1" 200 OK
+app-1  | INFO:     127.0.0.1:48428 - "GET /api/health HTTP/1.1" 200 OK
+app-1  | INFO:     127.0.0.1:33334 - "GET /api/health HTTP/1.1" 200 OK
+app-1  | INFO:     127.0.0.1:34126 - "GET /api/health HTTP/1.1" 200 OK
+app-1  | INFO:     127.0.0.1:56976 - "GET /api/health HTTP/1.1" 200 OK
+app-1  | INFO:     127.0.0.1:38218 - "GET /api/health HTTP/1.1" 200 OK

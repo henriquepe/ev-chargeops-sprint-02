@@ -1,0 +1,44 @@
+{
+  "revisao_ui": [
+    {
+      "id": "demo-anomaly",
+      "eligibility": "eligible",
+      "reviewed_by": "manager",
+      "review_reason": "Revalidação de 09/10: duração longa conferida no cenário sintético."
+    }
+  ],
+  "fatura_fechada": [
+    {
+      "unit_id": "ap101",
+      "total_cents": 2926
+    },
+    {
+      "unit_id": "ap102",
+      "total_cents": 0
+    },
+    {
+      "unit_id": "ap201",
+      "total_cents": 0
+    },
+    {
+      "unit_id": "ap202",
+      "total_cents": 0
+    },
+    {
+      "unit_id": "ap301",
+      "total_cents": 0
+    }
+  ],
+  "auditoria_ui": [
+    {
+      "action": "session.ingested",
+      "entity_id": "demo-anomaly",
+      "actor": "seed"
+    },
+    {
+      "action": "session.reviewed",
+      "entity_id": "demo-anomaly",
+      "actor": "manager"
+    }
+  ]
+}

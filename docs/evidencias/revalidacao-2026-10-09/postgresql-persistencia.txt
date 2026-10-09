@@ -1,0 +1,19 @@
+ unit_id | total_cents 
+---------+-------------
+ ap101   |        2926
+ ap102   |           0
+ ap201   |           0
+ ap202   |           0
+ ap301   |           0
+(5 rows)
+
+ invoice_items | session_cents 
+---------------+---------------
+             4 |          3426
+(1 row)
+
+ closed_events 
+---------------
+             1
+(1 row)
+

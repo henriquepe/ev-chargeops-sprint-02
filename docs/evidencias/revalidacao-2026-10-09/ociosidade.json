@@ -1,0 +1,16 @@
+{
+  "check": "20 minutos ociosos menos 15 de franquia resultam em 50 centavos",
+  "result": "PASSED",
+  "item": {
+    "session_id": "revalidation-idle-20261009",
+    "started_at": "2026-11-26T19:00:00-03:00",
+    "status": "completed",
+    "energy_kwh": 14.2,
+    "cost_center": "resident",
+    "energy_cents": 1349,
+    "operation_cents": 150,
+    "idle_cents": 50,
+    "loss_cents": 27,
+    "total_cents": 1576
+  }
+}

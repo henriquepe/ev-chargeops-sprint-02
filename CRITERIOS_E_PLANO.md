@@ -1,10 +1,10 @@
 # Sprint 02 — entendimento e plano
 
-Fonte: atividade FIAP ON 662437, lida em 27/09/2026. Prazo: **13/10/2026 às 23h59**. Equipe exibida: **Grupo 22**, Henrique Pires Espindola, RM 568600. A Sprint 01 usava o nome Grupo 5; preservamos esse documento em `docs/sprint-01/`.
+Fonte: atividade FIAP ON 662437, lida em 27/09/2026 e revalidada em 09/10/2026. Prazo: **13/10/2026 às 23h59**. Equipe exibida: **Grupo 22**, Henrique Pires Espindola, RM 568600. A Sprint 01 usava o nome Grupo 5; preservamos esse documento em `docs/sprint-01/`.
 
 ## Demanda e rubrica
 
-O entregável é um TXT com o link do repositório contendo um protótipo funcional, README em português e evidências. A instituição exige compreensão do código e pitch individual de três minutos na etapa presencial para validar as notas. Apoio de IA ao desenvolvimento é permitido. Não basta um documento ou telas estáticas.
+O entregável é um TXT com o link do repositório contendo um protótipo funcional, README em português e evidências. A instituição exige compreensão do código e pitch individual de cinco minutos na etapa presencial para validar as notas. Apoio de IA ao desenvolvimento é permitido. Não basta um documento ou telas estáticas.
 
 | Critério | Peso | Critério de aceite técnico |
 |---|---:|---|
@@ -19,7 +19,7 @@ O entregável é um TXT com o link do repositório contendo um protótipo funcio
 1. **Domínio e persistência:** FastAPI, SQLAlchemy/Alembic, PostgreSQL no Compose e SQLite para execução rápida. Contrato normalizado independente da GoodWe. Login de gestor/morador, isolamento por unidade, ingestão idempotente, auditoria e rateio com Decimal. Validar cálculos e exceções por testes de integração.
 2. **Inteligência aplicada:** detector estatístico robusto treinado em sessões históricas (mediana e MAD), regressão de consumo diário, holdout temporal, baseline semanal e previsão mensal. O detector altera a elegibilidade da cobrança. Validar anomalia, insuficiência de dados e ausência de dados futuros.
 3. **Experiência funcional:** React/Vite, dashboard, filtros, simulador de cenários, revisão, demonstrativo, fechamento mensal e CSV; portal do morador protegido pela API. Testar o fluxo com servidor e navegador reais.
-4. **Entrega e explicação:** instruções, justificativas de desvios, modelo de dados, evidências, checklist da rubrica, guia de estudo e pitch de três minutos. Conferir clone/instalação, build e testes.
+4. **Entrega e explicação:** instruções, justificativas de desvios, modelo de dados, evidências, checklist da rubrica, guia de estudo e pitch de cinco minutos. Conferir clone/instalação, build e testes.
 
 ## Decisões de escopo
 
@@ -35,3 +35,7 @@ O entregável é um TXT com o link do repositório contendo um protótipo funcio
 ## Estado
 
 Entendimento, implementação e validação concluídos em 27/09/2026. Passaram 31 testes backend, 3 testes de componentes e 15 verificações HTTP em cada banco (PostgreSQL e SQLite). A entrega no FIAP ON e o pitch individual continuam sendo ações do aluno. Consulte `docs/evidencias/VALIDACAO.md` para o resultado efetivamente obtido.
+
+## Atualização do enunciado — 09/10/2026
+
+A atividade FIAP ON passou a informar pitch individual de **cinco minutos** durante a prova presencial obrigatória. O roteiro atual está em `docs/PITCH_5_MINUTOS.md`. Rubrica, formato TXT, grupo e prazo permanecem iguais aos registrados em setembro. O documento preservado em `docs/sprint-01/` é histórico e não substitui a orientação atual.

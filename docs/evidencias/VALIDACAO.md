@@ -1,5 +1,7 @@
 # Validação executada — 27/09/2026
 
+Uma nova conferência foi concluída em [09/10/2026](revalidacao-2026-10-09/RELATORIO.md). Consulte-a para o aceite atual e a atualização do pitch.
+
 Todas as sessões e contas operacionais são sintéticas. Os resultados abaixo vieram da aplicação em execução, não de telas com valores estáticos. Não houve teste com equipamento GoodWe real nem cobrança financeira.
 
 ## Resultado

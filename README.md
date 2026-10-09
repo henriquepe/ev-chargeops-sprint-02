@@ -173,6 +173,8 @@ Para conectar o laboratório, ainda será necessário obter autorização/conta,
 
 ## Testes e evidências
 
+**Revalidação de 09/10/2026:** instalação nova, testes, API, banco e interface conferidos novamente. Consulte o [relatório de aceite atualizado](docs/evidencias/revalidacao-2026-10-09/RELATORIO.md), incluindo a correção da duração do pitch para cinco minutos.
+
 ```bash
 ./scripts/check.sh
 ```
@@ -195,7 +197,7 @@ Esse roteiro cria seis sessões de teste, resolve retenções, verifica dois rev
 - [Fatura do morador](docs/evidencias/04-fatura-morador.png) e [portal mobile](docs/evidencias/05-portal-mobile.png)
 - [Captura de revisão pela IA](docs/evidencias/03-revisao-ia.png)
 - [Guia de estudo e decisões de código](docs/GUIA_DE_ESTUDO.md)
-- [Roteiro para o pitch de três minutos](docs/PITCH_3_MINUTOS.md)
+- [Roteiro para o pitch de cinco minutos](docs/PITCH_5_MINUTOS.md)
 - [Entendimento e rastreabilidade da rubrica](CRITERIOS_E_PLANO.md)
 
 O workflow GitHub Actions executa testes backend, frontend e fluxo HTTP com PostgreSQL em ambiente novo.
@@ -219,7 +221,7 @@ entrega.txt        link do repositório para anexar ao FIAP ON
 
 O desenvolvimento contou com apoio de IA para implementação e revisão. Os testes, decisões e limitações estão documentados para leitura crítica. A equipe deve estudar e conseguir explicar o código; este repositório não comprova sozinho a compreensão individual exigida pela instituição. O guia e o pitch são materiais de preparação.
 
-O arquivo `entrega.txt` é o formato solicitado pela atividade. A entrega no FIAP ON e a gravação/apresentação individual do pitch são etapas distintas. Conforme o enunciado consultado, o prazo da Sprint 02 é **13/10/2026, às 23h59**, e a validação presencial é necessária para habilitar as notas.
+O arquivo `entrega.txt` é o formato solicitado pela atividade. A entrega no FIAP ON e a gravação/apresentação individual do pitch são etapas distintas. Conforme o enunciado consultado, o prazo da Sprint 02 é **13/10/2026, às 23h59**, e a validação presencial é necessária para habilitar as notas. Na releitura do enunciado em **09/10/2026**, o pitch individual consta como **cinco minutos**; essa orientação substitui os três minutos registrados em setembro.
 
 ## Referências técnicas
 
